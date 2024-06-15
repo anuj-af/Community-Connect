@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Community</title>
+</head>
+<body>
+    <main>
+        <h1>Edit Community</h1>
+        <form method="POST" action="/community/<%= community._id %>/edit?_method=PATCH">
+            <label for="name">Community Name</label>
+            <input type="text" name="name" id="name" alt="Community Name" value="<%= community.name %>" required>
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description" alt="Community Description" value="<%= community.description %>" required>
+            <button>Save Changes</button>
+        </form>
+    </main>
+</body>
+</html>

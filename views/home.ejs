@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+<body>
+    <main>
+        <% if(communities.length === 0){ %>
+            <h1>No Communites Available!!</h1>
+        <% } else{ %>
+        <h1>All Communities</h1>
+        <ul>
+            <% for(let community of communities){ %>
+                <li><a href="/community/<%= community._id %>/show"><%= community.name %></a></li>
+            <% } %>
+        </ul>
+        <% } %>
+        <a href="/community/new">Create Community</a>
+    </main>
+</body>
+</html>
