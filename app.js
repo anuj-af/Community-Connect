@@ -35,6 +35,11 @@ const communityRoutes = require('./routes/community');
 app.use('/community',communityRoutes);
 
 
+//User EndPoints
+const userRoutes = require('./routes/user');
+app.use('/user',userRoutes);
+
+
 app.listen(3000, () => {
     console.log("Serving on port 3000");
 })
