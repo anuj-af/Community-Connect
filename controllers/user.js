@@ -4,32 +4,35 @@ const User=require('../models/user');
 module.exports.renderRegister=(req,res)=>{
     res.render('user/register');
 }
-module.exports.register=async(req,res)=>{
-    const {username , email,password} = req.body;
-    const user=await new User({username,email,password});
-    await user.save();
-    res.redirect(`/user/${user._id}/profile`);
 
+module.exports.register=async (req,res) => {
+    try{
+
+        const {username,email,password} = req.body;
+        const user = new User({username,email});
+        const registerUser = await User.register(user,password);
+        req.login(registerUser, err => {
+            if (err) return next(err);
+            res.redirect(`/user/${user._id}/profile`);
+        })
+
+    }catch(e){
+        console.log(e);
+    }
 }
 
 //login : 
 module.exports.renderLogin=(req,res)=>{
+
     res.render('user/login');
 }
+
 module.exports.login=async(req,res)=>{
-    const {username,password} = req.body;
-    const user=await User.findOne({username});
-    
-    if(!user){
-        return res.send("Cannot find user with that username");
-    }
 
-    if( (password != user.password)){
-        return res.redirect('/user/login'); 
-    }
-    res.redirect(`/user/${user._id}/profile`);
+    const path = res.locals.returnTo || '/';
+    res.redirect(path);
+
 }
-
 
 //Profile : 
 module.exports.getProfile=async(req,res)=>{
@@ -52,4 +55,13 @@ module.exports.editProfile=async(req,res)=>{
     const {userId}= req.params;
     const user = await User.findByIdAndUpdate(userId,req.body, { runValidators: true, new: true });
     res.redirect(`/user/${userId}/profile`);
+}
+
+module.exports.logout=(req,res) => {
+
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+      });    
+
 }

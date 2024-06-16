@@ -12,7 +12,14 @@
         <% } %>
         <a href="/community/new">Create Community</a>
         <br>
-        <a href="/user/login">Login</a>
-        <br>
-        <a href="/user/register">Register</a>
+        <% if (!currentUser) { %>
+            <a href="/user/login">Login</a>
+            <br>
+            <a href="/user/register">Register</a>
+            
+        <% }else{ %>
+            <br>
+            <a href="/user/logout">Logout</a>
+        <% } %>
+        
     </main>
