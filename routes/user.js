@@ -13,7 +13,7 @@ router.route('/register')
 
 router.route('/login')
     .get(userController.renderLogin)
-    .post(storeReturnTo,passport.authenticate('local', { failureRedirect: '/login', failureMessage: true }),userController.login)
+    .post(storeReturnTo,passport.authenticate('local', { failureRedirect:'/user/login', failureMessage: true }),userController.login)
 
 router.get('/:userId/profile',userController.getProfile)
 

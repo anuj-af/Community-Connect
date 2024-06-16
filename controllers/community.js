@@ -3,9 +3,9 @@ const Community = require('../models/community');
 module.exports.newForm = (req,res) => {
     res.render('community/new');
 }
-module.exports.createCommunity = (req,res) => {
-    const community = new Community(req.body); 
-    community.save();
+module.exports.createCommunity = async (req,res) => {
+    const community = await new Community(req.body); 
+    await community.save();
     res.redirect(`/community/${community._id}/show`); 
 }
 

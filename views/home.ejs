@@ -3,23 +3,24 @@
         <% if(communities.length === 0){ %>
             <h1>No Communites Available!!</h1>
         <% } else{ %>
-        <h1>All Communities</h1>
+        <h1 class="ms-4">All Communities</h1>
         <ul>
             <% for(let community of communities){ %>
-                <li><a href="/community/<%= community._id %>/show"><%= community.name %></a></li>
+                <div class="card w-50 mb-3">
+                    <!-- <img src="..." class="card-img-top" alt="..."> -->
+                    <div class="card-body">
+                      <h5 class="card-title"><%=community.name%></h5>
+                      <p class="card-text"><%=community.description%></p>
+                      <a href="/community/<%= community._id %>/show" class="btn btn-primary">Explore <%=community.name%></a>
+                      <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
             <% } %>
         </ul>
         <% } %>
+
         <a href="/community/new">Create Community</a>
         <br>
-        <% if (!currentUser) { %>
-            <a href="/user/login">Login</a>
-            <br>
-            <a href="/user/register">Register</a>
-            
-        <% }else{ %>
-            <br>
-            <a href="/user/logout">Logout</a>
-        <% } %>
+        
         
     </main>
