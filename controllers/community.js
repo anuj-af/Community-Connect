@@ -4,9 +4,9 @@ module.exports.newForm = (req,res) => {
     res.render('community/new');
 }
 module.exports.createCommunity = (req,res) => {
-    const community = new Community(req.body);
+    const community = new Community(req.body); 
     community.save();
-    res.redirect(`/community/${community._id}/show`);
+    res.redirect(`/community/${community._id}/show`); 
 }
 
 module.exports.showCommunity = async (req,res) => {
