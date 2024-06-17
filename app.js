@@ -73,6 +73,13 @@ app.use('/community',communityRoutes);
 const userRoutes = require('./routes/user');
 app.use('/user',userRoutes);
 
+app.use((err,req,res,next)=>{
+    
+    const {message,statusCode=500}=err;
+    if(!message) err.message="Something unusual happened !! ";
+    res.status(statusCode).send(message);
+})
+
 
 app.listen(3000, () => {
     console.log("Serving on port 3000");
