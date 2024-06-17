@@ -1,25 +1,26 @@
 <% layout('layouts/boilerplate') %>
-    <main>
+    <main class="mx-5 mt-5">
         <% if(communities.length === 0){ %>
             <h1>No Communites Available!!</h1>
         <% } else{ %>
-        <h1 class="ms-4">All Communities</h1>
-        <ul>
-            <% for(let community of communities){ %>
-                <div class="card w-50 mb-3">
-                    <!-- <img src="..." class="card-img-top" alt="..."> -->
-                    <div class="card-body">
-                      <h5 class="card-title"><%=community.name%></h5>
-                      <p class="card-text"><%=community.description%></p>
-                      <a href="/community/<%= community._id %>/show" class="btn btn-primary">Explore <%=community.name%></a>
-                      <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+        <h1 class="ms-1 mb-3">All Communities</h1>
+            <div class="row">
+                <% for(let community of communities){ %>
+                    <div class="col-md-4 p-3">
+                        <div class="card mb-3">
+                            <img src="<%= community.profileImg %>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%=community.name%></h5>
+                            <p class="card-text"><%=community.description%></p>
+                            <a href="/community/<%= community._id %>/show" class="btn btn-primary">Explore <%=community.name%></a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-            <% } %>
-        </ul>
+                <% } %>
+            </div>
         <% } %>
 
-        <a href="/community/new">Create Community</a>
+        <a class="btn btn-secondary ms-1 mb-5" href="/community/new">Create Community</a>
         <br>
         
         

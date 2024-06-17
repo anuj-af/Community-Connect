@@ -1,11 +1,13 @@
 <% layout('layouts/boilerplate') %>
-    <main>
-        <h1>Edit Community</h1>
-        <form method="POST" action="/community/<%= community._id %>/edit?_method=PATCH">
-            <label for="name">Community Name</label>
-            <input type="text" name="name" id="name" alt="Community Name" value="<%= community.name %>" required>
-            <label for="description">Description</label>
-            <input type="text" name="description" id="description" alt="Community Description" value="<%= community.description %>" required>
-            <button>Save Changes</button>
-        </form>
+    <main class="mx-5 mt-5">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="mb-4">Edit Community</h1>
+            <form method="POST" action="/community/<%= community._id %>/edit?_method=PATCH">
+                <label for="name" class="form-label">Community Name</label>
+                <input type="text" class="form-control mb-3" name="name" id="name" alt="Community Name" value="<%= community.name %>" required>
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control mb-3" name="description" id="description" alt="Community Description" value="<%= community.description %>" required>
+                <button class="btn btn-primary mt-4">Save Changes</button>
+            </form>
+        </div>
     </main>

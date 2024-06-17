@@ -1,11 +1,13 @@
 <% layout('layouts/boilerplate') %>
-    <main>
-        <h1>Create New Community</h1>
-        <form method="POST" action="/community/new">
-            <label for="name">Community Name</label>
-            <input type="text" name="name" id="name" alt="Community Name" required>
-            <label for="description">Description</label>
-            <input type="text" name="description" id="description" alt="Community Description" required>
-            <button>Create</button>
-        </form>
+    <main class="mx-5 mt-5">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="mb-4">Create New Community</h1>
+            <form method="POST" action="/community/new">
+                <label class="form-label" for="name">Community Name</label>
+                <input type="text" class="form-control mb-3" name="name" id="name" alt="Community Name" required>
+                <label class="form-label" for="description">Description</label>
+                <input type="text" class="form-control mb-3" name="description" id="description" alt="Community Description" required>
+                <button class="btn btn-primary mt-4">Create</button>
+            </form>
+        </div>
     </main>
