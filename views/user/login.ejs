@@ -1,11 +1,28 @@
 <% layout('layouts/boilerplate') %>
+    
+<div class="container col-md-4">
     <h1>Login</h1>
-    <form action="/user/login" method="post">
-        <label for="username">username : </label>
-        <input type="text" name="username" id="username">
 
-        <label for="password">Password : </label>
-        <input type="password" name="password" id="password">
+    <form action="/user/login" method="post" class="row g-3 needs-validation" novalidate>
 
-        <button>Login</button>
+
+        <div class="row-md-4 mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <button class="btn btn-success" type="submit">Login</button>
+
     </form>
+</div>

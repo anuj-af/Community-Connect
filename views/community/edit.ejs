@@ -1,8 +1,40 @@
 <% layout('layouts/boilerplate') %>
+
+
+<div class="container col-md-4">
+    <h1 class="mb-4">Edit Community</h1>
+
+    <form action="/community/<%= community._id %>/edit?_method=PATCH" method="post" class="row g-3 needs-validation" novalidate>
+
+
+        <div class="row-md-4 mb-3">
+            <label for="name" class="form-label">Community Name</label>
+            <input type="text" class="form-control" id="name" name="name" required alt="Community Name" value="<%= community.name %>">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" required alt="Community Description"><%= community.description %></textarea>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-4" type="submit">Update</button>
+
+    </form>
+</div>
+
+
+<!-- 
+
     <main class="mx-5 mt-5">
         <div class="col-md-6 offset-md-3">
             <h1 class="mb-4">Edit Community</h1>
-            <form method="POST" action="/community/<%= community._id %>/edit?_method=PATCH">
+            <form method="POST" action="/community/<%= //community._id %>/edit?_method=PATCH">
                 <label for="name" class="form-label">Community Name</label>
                 <input type="text" class="form-control mb-3" name="name" id="name" alt="Community Name" value="<%= community.name %>" >
                 <label for="description" class="form-label">Description</label>
@@ -10,4 +42,4 @@
                 <button class="btn btn-primary mt-4">Save Changes</button>
             </form>
         </div>
-    </main>
+    </main> -->

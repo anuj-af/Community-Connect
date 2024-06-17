@@ -1,16 +1,40 @@
 <% layout('layouts/boilerplate') %>
-    <h1>Edit profile</h1>
-    <form action="/user/<%= user._id %>/profile/edit?_method=patch" method="post">
+    
+<div class="container col-md-4">
+    <h1>Edit</h1>
 
-        <label for="username">Username : </label>
-        <input type="text" name="username" id="username" value="<%=user.username%>">
+    <form action="/user/<%= user._id %>/profile/edit?_method=patch" method="post" class="row g-3 needs-validation" novalidate>
 
-        <label for="email">Email : </label>
-        <input type="email" name="email" id="email" value="<%=user.email%>">
 
-        <label for="password">Password : </label>
-        <input type="password" name="password" id="password" value="<%=user.password%>"> 
+        <div class="row-md-4 mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
 
-        <button>Update profile</button>
-    </form>    
-    <a href="/user/<%=user.id%>/prfile">Back to profile</a>
+        <div class="row-md-4 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <button class="btn btn-success" type="submit">Update</button>
+        <div class="row-md-4">
+            <a href="/user/<%=user.id%>/prfile" class="card-link">Back to profile</a>
+        </div>
+
+    </form>
+</div>
+

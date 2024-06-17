@@ -20,6 +20,7 @@
             <a class="nav-link mx-2" href="/user/login">Login</a>
             <a class="nav-link mx-2" href="/user/register">Register</a>
           <% }else{ %>
+              <a class="nav-link mx-2" href="/user/<%=currentUser._id%>/profile">Profile</a>
               <a class="nav-link mx-2" href="/user/logout">Logout</a>
           <% } %>
         </div>

@@ -1,14 +1,36 @@
 <% layout('layouts/boilerplate') %>
+
+<div class="container col-md-4">
     <h1>Register</h1>
-    <form action="/user/register" method="post">
-        <label for="username">Enter the username : </label>
-        <input type="text" name="username" id="username">
 
-        <label for="email">Enter your email : </label>
-        <input type="email" name="email" id="email">
+    <form action="/user/register" method="post" class="row g-3 needs-validation" novalidate>
 
-        <label for="password">Enter the password</label>
-        <input type="password" name="password" id="password">
 
-        <button>Register</button>
+        <div class="row-md-4 mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <button class="btn btn-success" type="submit">Register</button>
+
     </form>
+</div>

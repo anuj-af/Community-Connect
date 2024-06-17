@@ -5,11 +5,11 @@ const localStreategy=require('passport-local');
 const userController=require('../controllers/user');
 
 const User = require('../models/user');
-const { storeReturnTo } = require('../middleware');
+const { storeReturnTo, validateUser } = require('../middleware');
 
 router.route('/register')
     .get(userController.renderRegister)
-    .post(userController.register)
+    .post(validateUser,userController.register)
 
 router.route('/login')
     .get(userController.renderLogin)
@@ -19,7 +19,7 @@ router.get('/:userId/profile',userController.getProfile)
 
 router.route('/:userId/profile/edit')
     .get(userController.renderProfileEdit)
-    .patch(userController.editProfile)
+    .patch(validateUser,userController.editProfile)
 
 router.get('/logout',userController.logout)
 
