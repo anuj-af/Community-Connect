@@ -73,6 +73,9 @@ app.use('/community',communityRoutes);
 const userRoutes = require('./routes/user');
 app.use('/user',userRoutes);
 
+const postRoutes = require('./routes/post');
+app.use('/community/:id',postRoutes);
+
 app.use((err,req,res,next)=>{
     
     const {message,statusCode=500}=err;

@@ -8,7 +8,7 @@
 
         <div class="row-md-4 mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" class="form-control" id="username" name="username" required value="<%=user.username%>">
             <div class="valid-feedback">
               Looks good!
             </div>
@@ -16,15 +16,7 @@
 
         <div class="row-md-4 mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-            <div class="valid-feedback">
-              Looks good!
-            </div>
-        </div>
-
-        <div class="row-md-4 mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="email" class="form-control" id="email" name="email" required value="<%=user.email%>">
             <div class="valid-feedback">
               Looks good!
             </div>
@@ -32,7 +24,7 @@
 
         <button class="btn btn-success" type="submit">Update</button>
         <div class="row-md-4">
-            <a href="/user/<%=user.id%>/prfile" class="card-link">Back to profile</a>
+            <a href="/user/<%=user.id%>/profile" class="card-link">Back to profile</a>
         </div>
 
     </form>

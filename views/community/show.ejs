@@ -1,9 +1,44 @@
 <% layout('layouts/boilerplate') %>
-    <main>
-        <h1><%= community.name %></h1>
-        <p><%= community.description %></p>
-        <form method="POST" action="/community/<%= community._id %>?_method=DELETE" >
-            <button>Delete Community</button>
-        </form>
-        <a href="/community/<%= community._id %>/edit">Edit Community</a>
-    </main>
+<main>
+    <h1><%= community.name %></h1>
+    <p><%= community.description %></p>
+    <form method="POST" action="/community/<%= community._id %>?_method=DELETE">
+        <button>Delete Community</button>
+    </form>
+    <a href="/community/<%= community._id %>/post/new">Add New Post</a>
+    <br>
+    <a href="/community/<%= community._id %>/edit">Edit Community</a>
+
+    <div class="container">
+        <% for(let post of community.posts) { %>
+            <div class="card mb-3">
+                <div class="card-body">
+
+                    <div id="post-<%=post._id%>">
+                        <h5 class="card-title"><%= post.title %></h5>
+                        <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
+                        <p class="card-subtitle"><%= post.content %></p>
+                        <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes %></button>
+                        <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes %></button>
+                        <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
+                    </div>
+
+                    <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;">
+                        <div class="form-group">
+                            <label for="title-<%= post._id %>">Title</label>
+                            <input type="text" class="form-control" id="title-<%= post._id %>" name="title" value="<%= post.title %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="content-<%= post._id %>">Content</label>
+                            <textarea class="form-control" id="content-<%= post._id %>" name="content"><%= post.content %></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm('<%= post._id %>')">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<script src="/javascripts/editPost.js"></script>
