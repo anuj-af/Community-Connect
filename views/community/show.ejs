@@ -1,5 +1,6 @@
 <% layout('layouts/boilerplate') %>
     <main>
+        <h2><%=currentUser %></h2>
         <h1><%= community.name %></h1>
         <p><%= community.description %></p>
         <form method="POST" action="/community/<%= community._id %>?_method=DELETE" >
