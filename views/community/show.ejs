@@ -18,12 +18,18 @@
                         <h5 class="card-title"><%= post.title %></h5>
                         <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
                         <p class="card-subtitle"><%= post.content %></p>
-                        <form class="d-inline" method="POST" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote?_method=PATCH">
-                            <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
-                        </form>
-                        <form class="d-inline" method="POST" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote?_method=PATCH">
-                            <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
-                        </form>
+                        
+                        <% if (currentUser) { %>
+                         
+                            <form class="d-inline" method="POST" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote?_method=PATCH">
+                                <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
+                            </form>
+                            <form class="d-inline" method="POST" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote?_method=PATCH">
+                                <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
+                            </form>
+                            
+                        <% } %>
+                        
                         <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
                     </div>
 
