@@ -12,6 +12,7 @@ const userSchema = new Schema({
         required : true,
     },
     //password will be automatically set by passport local mongoose
+    
 }) 
 
 userSchema.plugin(PassportLocalMongoose);

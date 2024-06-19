@@ -8,7 +8,7 @@
 
         <div class="row-md-4 mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" value="<%=user.username%>" required>
+            <input type="text" class="form-control" id="username" name="username" required value="<%=user.username%>">
             <div class="valid-feedback">
               Looks good!
             </div>
@@ -16,21 +16,11 @@
 
         <div class="row-md-4 mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="<%=user.email%>" required>
+            <input type="email" class="form-control" id="email" name="email" required value="<%=user.email%>">
             <div class="valid-feedback">
               Looks good!
             </div>
-        </div>
-
-        <!-- cannot update password like that  -->
-
-        <!-- <div class="row-md-4 mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-            <div class="valid-feedback">
-              Looks good!
-            </div>
-        </div> -->
+        </div> 
 
         <button class="btn btn-success" type="submit">Update</button>
         <div class="row-md-4">

@@ -1,0 +1,28 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container col-md-4">
+    <h1 class="mb-4">Create New Post</h1>
+
+    <form action="/community/<%=id%>/post/new" method="post" class="row g-3 needs-validation" novalidate>
+
+
+        <div class="row-md-4 mb-3">
+            <label for="title" class="form-label">Post Title:</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <div class="row-md-4 mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea name="content" id="content" class="form-control" required></textarea>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-4" type="submit">Create Post</button>
+
+    </form>
+</div>

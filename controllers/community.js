@@ -9,7 +9,7 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
         try{
             const community = await new Community(req.body); 
              await community.save();
-            res.redirect(`/community/${community._id}/show`);
+            res.redirect(`/community/${community._id}`);
 
         }
         catch(e){
@@ -20,7 +20,12 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
 
 module.exports.showCommunity = catchAsync(async (req,res,next) => {
     try{
-        const community = await Community.findById(req.params.id);
+        const community = await Community.findById(req.params.id).populate({
+            path:'posts',
+            populate:{
+                path:'author'   
+            }
+        });
         res.render('community/show', {community});
     }
     catch(e){
@@ -52,7 +57,7 @@ module.exports.editForm = catchAsync(async (req,res,next) => {
 module.exports.updateCommunity =catchAsync(async (req,res,next) => {
     try{
         const community = await Community.findByIdAndUpdate(req.params.id, req.body, { runValidators: true, new: true });
-        res.redirect(`/community/${community._id}/show`);
+        res.redirect(`/community/${community._id}`);
     }
     catch(e){
         next(new CustomError("Unable to update the community :( ",400));
