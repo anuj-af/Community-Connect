@@ -7,8 +7,12 @@ module.exports.newForm = (req,res) => {
 }
 module.exports.createCommunity = catchAsync(async (req,res,next) => {
         try{
-            const community = await new Community(req.body); 
-             await community.save();
+
+            const {name,description,profileImg} = req.body;
+            const admin = req.user;
+
+            const community = await new Community({name,description,profileImg,admin});
+            await community.save();
             res.redirect(`/community/${community._id}`);
 
         }
@@ -25,7 +29,7 @@ module.exports.showCommunity = catchAsync(async (req,res,next) => {
             populate:{
                 path:'author'   
             }
-        });
+        }).populate('admin');
         res.render('community/show', {community});
     }
     catch(e){

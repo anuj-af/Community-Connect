@@ -5,7 +5,7 @@ const {isLoggedIn, validateCommunity} = require('../middleware');
 
 router.route('/new')
     .get(isLoggedIn,communityController.newForm)
-    .post(validateCommunity,communityController.createCommunity);
+    .post(isLoggedIn,validateCommunity,communityController.createCommunity);
 
 router.delete('/:id',isLoggedIn,communityController.deleteCommunity);
 
