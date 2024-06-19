@@ -9,3 +9,9 @@ function toggleEditForm(postId) {
         post.style.display = 'block';
     }
 }
+
+function toggleUpvote(postId) {
+    const upvoteBtn = document.getElementById(`upvote-${postId}`);
+    
+}
+// const downvoteBtn = document.getElementById(`downvote-${postId}`);

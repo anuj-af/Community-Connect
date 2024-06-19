@@ -41,7 +41,6 @@ router.post('/post/new',async (req,res) => {
 // });
 
 router.patch('/post/:postId/edit',async (req,res) => {
-
     const  {title,content} = req.body;
     const{id,postId} = req.params;
     const post = await Post.findByIdAndUpdate(postId,{title,content},{new:true,runValidators:true});
@@ -49,42 +48,36 @@ router.patch('/post/:postId/edit',async (req,res) => {
     res.redirect(`/community/${id}`);
 })
 
-router.patch('/post/:postId/upvote',async(req,res)=>{
-    const currentUser=req.user;
+router.patch('/post/:postId/upvote', async (req, res) => {
+    const { postId, id } = req.params;
+    const userId = req.user;
+    console.log(userId);
 
-    const {id,postId}=req.params;
-    const post=await Post.findById(postId);
+    const post = await Post.findById(postId);
+    const userUpvoted = post.upvotes.indexOf(userId);
 
-    const isUpvoted = await post.upvoters.indexOf(currentUser._id);
-    const isDownvoted = await post.downvoters.indexOf(currentUser._id);
-
-    if((isUpvoted == -1) &&(isDownvoted==-1)){
-        post.upvotes+=1;
-        post.upvoters.push(currentUser);
+    if (userUpvoted !==-1) {
+        post.upvotes = post.upvotes.filter(upvote => upvote.toString() !== userId.toString());
+    } else {
+        post.upvotes.push(userId);
     }
-    else{
-        return res.redirect(`/community/${id}`);
-    }
-    
+
     await post.save();
+    console.log(post);
     res.redirect(`/community/${id}`);
-})
+});
 
-router.patch('/post/:postId/downvote',async(req,res)=>{
-    const currentUser=req.user;
+router.patch('/post/:postId/downvote', async (req,res) => {
+    const { postId, id } = req.params;
+    const userId = req.user._id;
 
-    const {id,postId}=req.params;
-    const post=await Post.findById(postId);
+    const post = await Post.findById(postId);
+    const userDownvoted = post.downvotes.includes(userId);
 
-    const isUpvoted = await post.upvoters.indexOf(currentUser._id);
-    const isDownvoted = await post.downvoters.indexOf(currentUser._id);
-
-    if((isUpvoted == -1) &&(isDownvoted==-1)){
-        post.downvotes+=1;
-        post.downvoters.push(currentUser);
-    }
-    else{
-        return res.redirect(`/community/${id}`);
+    if (userDownvoted) {
+        post.downvotes = post.downvotes.filter(downvote => downvote.toString() !== userId.toString());
+    } else {
+        post.downvotes.push(userId);
     }
 
     await post.save();
