@@ -9,7 +9,7 @@ router.route('/new')
 
 router.delete('/:id',isLoggedIn,communityController.deleteCommunity);
 
-router.get('/:id/', communityController.showCommunity);
+router.get('/:id/' ,communityController.showCommunity);
 
 router.route('/:id/edit')
     .get(isLoggedIn,communityController.editForm)

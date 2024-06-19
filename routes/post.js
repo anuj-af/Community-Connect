@@ -41,19 +41,45 @@ router.post('/post/new',async (req,res) => {
 // });
 
 router.patch('/post/:postId/edit',async (req,res) => {
-
     const  {title,content} = req.body;
-
     const{id,postId} = req.params;
-    const community = await Community.findById(id);
-
     const post = await Post.findByIdAndUpdate(postId,{title,content},{new:true,runValidators:true});
-
     await post.save();
-
     res.redirect(`/community/${id}`);
-
 })
 
+router.patch('/post/:postId/upvote', async (req, res) => {
+    const { postId, id } = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+    const userUpvoted = post.upvotes.includes(userId);
+
+    if (userUpvoted) {
+        post.upvotes = post.upvotes.filter(upvote => upvote.toString() !== userId.toString());
+    } else {
+        post.upvotes.push(userId);
+    }
+
+    await post.save();
+    res.redirect(`/community/${id}`);
+});
+
+router.patch('/post/:postId/downvote', async (req,res) => {
+    const { postId, id } = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+    const userDownvoted = post.downvotes.includes(userId);
+
+    if (userDownvoted) {
+        post.downvotes = post.downvotes.filter(downvote => downvote.toString() !== userId.toString());
+    } else {
+        post.downvotes.push(userId);
+    }
+
+    await post.save();
+    res.redirect(`/community/${id}`);
+})
 
 module.exports = router;

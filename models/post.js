@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const {User} = require('../models/user');
+const { string } = require('joi');
 
 const postSchema = new Schema({
 
@@ -16,18 +17,19 @@ const postSchema = new Schema({
     content:{
         type:String
     },
-    upvotes:{
-        type:Number,
-        default:0
-    },
-    downvotes:{
-        type:Number,
-        default:0
-    },
+    upvotes: [{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    }],
+    downvotes: [{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    }]
     // comments:{
 
     // },
-
 })
 
 module.exports = mongoose.model('Post',postSchema);
