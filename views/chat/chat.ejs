@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat</title>
+    <link rel="stylesheet" href="/stylesheets/chat.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Community Chat: <%= community.name %></h1>
+    <div id="messages">
+        <% messages.forEach(message => { %>
+            <div>
+                <strong><%= message.sender.username %>:</strong> <%= message.content %>
+            </div>
+        <% }); %>
+    </div>
+    <form id="sendMessageForm">
+        <input type="text" id="messageContent" placeholder="Type your message here..." required>
+        <button type="submit">Send</button>
+    </form>
+    <script>
+        const communityId = '<%= community._id %>';
+    </script>
+    <script src="/javascripts/chat.js"></script>
+</body>
+</html>

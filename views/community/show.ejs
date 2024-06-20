@@ -5,9 +5,14 @@
     <form method="POST" action="/community/<%= community._id %>?_method=DELETE">
         <button>Delete Community</button>
     </form>
+    <form method="POST" action="/community/<%= community._id %>/follow">
+        <button>Follow Community</button>
+    </form>
     <a href="/community/<%= community._id %>/post/new">Add New Post</a>
     <br>
     <a href="/community/<%= community._id %>/edit">Edit Community</a>
+    <br>
+    <a href="/community/<%= community._id %>/chat">Community Chat</a>
 
     <div class="container">
         <% for(let post of community.posts) { %>

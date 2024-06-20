@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const ejsMate = require('ejs-mate');
 const path = require('path');
 const methodOverride = require('method-override')
@@ -7,6 +6,12 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
+const {Server} = require("socket.io")
+const { createServer } = require('node:http');
+
+const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 const User = require('./models/user');
 
@@ -46,6 +51,7 @@ app.engine('ejs',ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'views'));
 
+app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')));
@@ -83,7 +89,19 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).send(message);
 })
 
+// Socket.io connection
+io.on('connection', (socket) => {
+    console.log('New client connected');
 
-app.listen(3000, () => {
+    socket.on('sendMessage', (message) => {
+        io.emit('newMessage', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
+});
+
+server.listen(3000, () => {
     console.log("Serving on port 3000");
 })

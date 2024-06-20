@@ -21,7 +21,8 @@ const communitySchema = new mongoose.Schema({
             type:Schema.Types.ObjectId,
             ref:'Post'
         }
-    ]
+    ],
+    members: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 })
 
 module.exports = mongoose.model('Community',communitySchema);
