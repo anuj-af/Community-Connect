@@ -1,27 +1,90 @@
 <% layout('layouts/boilerplate') %>
     <main class="mx-5 mt-5">
-        <% if(communities.length === 0){ %>
-            <h1>No Communites Available!!</h1>
-        <% } else{ %>
-        <h1 class="ms-1 mb-3">All Communities</h1>
+        <div class="container">
             <div class="row">
-                <% for(let community of communities){ %>
-                    <div class="col-md-4 p-3">
-                        <div class="card mb-3">
-                            <img src="<%= community.profileImg %>" class="card-img-top" alt="...">
+                <div class="col-8">
+                    <h1 class="ms-1 mb-3">All Posts</h1>
+                    <% for(let community of user.followings) { %>
+                        <% for(let post of community.posts) { %>
+                            <div class="card mb-3">
                             <div class="card-body">
-                            <h5 class="card-title"><%=community.name%></h5>
-                            <p class="card-text"><%=community.description%></p>
-                            <a href="/community/<%= community._id %>" class="btn btn-primary">Explore <%=community.name%></a>
+                            <div id="post-<%=post._id%>">
+                                <h5 class="card-title"><%= post.title %></h5>
+                                <p class="card-text"><small class="text-body-secondary">Posted in community : <%=community.name%></small></p>
+                                <p class="card-subtitle"><%= post.content %></p>
+                                 
+                                    <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote?q=home">
+                                        <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
+                                    </form>
+                                    <form class="d-inline" method="get" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote?q=home">
+                                        <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
+                                    </form>
+        
+                                    <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
+                                 
+                                    <form action="/community/<%=community._id%>/post/<%=post._id%>?_method=DELETE" method="POST" class="d-inline">
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                    
+                                        <% if (currentUser._id.toString() === post.author._id.toString()) { %>
+                                            <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
+                                        <% } %>
+        
+                                <% } %>
                             </div>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        <% } %>
+                            </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+                <div class="col-4">
+                    <% if(communities.length === 0){ %>
+                        <h1>No Communites Available!!</h1>
+                    <% } else{ %>
+                    <h1 class="ms-1 mb-3">All Communities</h1>
+                        <div class="row">
+                            <% for(let community of communities){ %>
+                                <div class="row" >
 
-        <a class="btn btn-secondary ms-1 mb-5" href="/community/new">Create Community</a>
-        <br>
+                                    <a href="/community/<%= community._id %>" style="text-decoration: none;">
+                                        <div class="card mb-4" style="max-width: 540px; width: 18rem;">
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                            <img src="<%= community.profileImg %>" class="img-fluid rounded-start" alt="..." style="height:60px;width:130;">
+                                            </div>
+                                            <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><%=community.name%></h5>
+                                                <p class="card-text d-inline"><%=community.description%></p>
+                                                
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </a>
+                                    <br>
+
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
         
         
     </main>
+
+
+    
+
+    
+        <!-- <div class="card mb-3" style="width: 12rem;">
+            <img src= class="card-img-top" alt="...">
+            <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="/community/<%= //community._id %>" class="btn btn-primary">Explore <%=//community.name%></a>
+            </div>
+        </div>
+     -->

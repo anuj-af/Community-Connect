@@ -2,17 +2,24 @@
 <main>
     <h1><%= community.name %></h1>
     <p><%= community.description %></p>
-    <form method="POST" action="/community/<%= community._id %>?_method=DELETE">
-        <button>Delete Community</button>
+    <p>Followers :  <%= community.followers ? community.followers.length : 0 %></p>
+    <form class="d-inline" method="post" id="follow" action="/community/<%= community._id %>/follow">
+        <button class="btn btn-primary">Follow</button>
     </form>
-    <form method="POST" action="/community/<%= community._id %>/follow">
-        <button>Follow Community</button>
-    </form>
-    <a href="/community/<%= community._id %>/post/new">Add New Post</a>
-    <br>
-    <a href="/community/<%= community._id %>/edit">Edit Community</a>
     <br>
     <a href="/community/<%= community._id %>/chat">Community Chat</a>
+    <br>
+    <a href="/community/<%= community._id %>/post/new" class="btn btn-success">Add New Post</a>
+    <br>
+    <% if (currentUser && (currentUser._id.toString() === community.admin._id.toString())) { %>
+        
+        <form method="POST" action="/community/<%= community._id %>?_method=DELETE">
+            <button>Delete Community</button>
+        </form>
+        <a href="/community/<%= community._id %>/edit">Edit Community</a>
+        <br>
+
+    <% } %>
 
     <div class="container">
         <% for(let post of community.posts) { %>
@@ -23,13 +30,27 @@
                         <h5 class="card-title"><%= post.title %></h5>
                         <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
                         <p class="card-subtitle"><%= post.content %></p>
-                        <form class="d-inline" method="POST" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote?_method=PATCH">
-                            <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
-                        </form>
-                        <form class="d-inline" method="POST" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote?_method=PATCH">
-                            <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
-                        </form>
-                        <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
+                         
+                            <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote">
+                                <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
+                            </form>
+                            <form class="d-inline" method="post" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote">
+                                <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
+                            </form>
+
+                        <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
+                         
+                            <form action="/community/<%=community._id%>/post/<%=post._id%>?_method=DELETE" method="POST" class="d-inline">
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                            
+                                <% if (currentUser._id.toString() === post.author._id.toString()) { %>
+                                    <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
+                                <% } %>
+
+                        <% } %>
+                            
+
                     </div>
 
                     <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;">
@@ -51,3 +72,5 @@
 </main>
 
 <script src="/javascripts/editPost.js"></script>
+
+

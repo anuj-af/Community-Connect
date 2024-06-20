@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const PassportLocalMongoose=require('passport-local-mongoose');
+const Community= require('./community');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -12,6 +13,13 @@ const userSchema = new Schema({
         required : true,
     },
     //password will be automatically set by passport local mongoose
+    followings : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : 'Community'
+        }
+    ]
+    
 }) 
 
 userSchema.plugin(PassportLocalMongoose);

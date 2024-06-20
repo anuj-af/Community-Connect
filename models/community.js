@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Post = require('./post');
+const User = require('./user');
 
 const communitySchema = new mongoose.Schema({
     name: {
@@ -22,7 +23,24 @@ const communitySchema = new mongoose.Schema({
             ref:'Post'
         }
     ],
-    members: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+    admin:{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    },
+    followers : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : 'User'
+        }
+    ]
+})
+
+communitySchema.post('findOneAndDelete',async function(data) {
+
+    if(data){
+        await Post.deleteMany({_id:{$in:data.posts}});
+    }
 })
 
 module.exports = mongoose.model('Community',communitySchema);

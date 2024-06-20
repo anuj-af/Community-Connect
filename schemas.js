@@ -3,7 +3,7 @@ const joi = require('joi');
 module.exports.communitySchema = joi.object({
     name:joi.string().required(),
     description:joi.string(),
-    profileImg:joi.string(),
+    profileImg:joi.string()
 });
 
 

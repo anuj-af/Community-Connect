@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
-                console.log(data.content);
                 socket.emit('sendMessage', data);
                 document.getElementById('messageContent').value = '';
             });

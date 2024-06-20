@@ -7,7 +7,7 @@ const Message = require('../models/message');
 
 router.route('/new')
     .get(isLoggedIn,communityController.newForm)
-    .post(validateCommunity,communityController.createCommunity);
+    .post(isLoggedIn,validateCommunity,communityController.createCommunity);
 
 router.delete('/:id',isLoggedIn,communityController.deleteCommunity);
 
@@ -18,14 +18,7 @@ router.route('/:id/edit')
     .patch(validateCommunity,communityController.updateCommunity);
 
 // Join a community
-router.post('/:id/join', async (req, res) => {
-    const { id } = req.params;
-    const userId = req.user._id;
-    const community = await Community.findById(id);
-    community.members.push(userId);
-    await community.save();
-    res.redirect(`/community/${community._id}`);
-});
+router.post('/:id/follow',isLoggedIn,communityController.follow);
 
 // Send a message
 router.post('/:id/messages', async (req, res) => {
@@ -37,13 +30,11 @@ router.post('/:id/messages', async (req, res) => {
     try {
         await message.save();
         const populatedMessage = await message.populate('sender');
-        console.log(populatedMessage);
         res.status(201).json(populatedMessage);
     } catch (e) {
         res.status(505).json({ error: 'Message could not be saved' });
     }
 });
-
 
 // Get messages
 router.get('/:id/messages', async (req, res) => {
@@ -55,11 +46,10 @@ router.get('/:id/messages', async (req, res) => {
 // Get community chat page
 router.get('/:id/chat', async (req, res) => {
     const { id } = req.params;
-    const community = await Community.findById(id).populate('members');
+    const community = await Community.findById(id).populate('followers');
     const messages = await Message.find({ community: id }).populate('sender');
     console.log(community, messages);
     res.render('chat/chat', { community, messages });
 });
-
 
 module.exports = router;

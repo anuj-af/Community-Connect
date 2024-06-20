@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
-const {Server} = require("socket.io")
+const {Server} = require("socket.io");
 const { createServer } = require('node:http');
 
 const app = express();
@@ -14,6 +14,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 const User = require('./models/user');
+const { isLoggedIn } = require('./middleware');
 
 app.use(session({
 
@@ -64,10 +65,17 @@ app.use((req,res,next) => {
 
 const Community = require('./models/community');
 // Home Endpoint
-app.get('/', async (req,res) => {
+app.get('/',isLoggedIn,async (req,res) => {
 
+    const userId=req.user._id;
     const communities = await Community.find({});
-    res.render('home',{communities});
+    const user=await User.findById(userId).populate({
+        path : 'followings',
+        populate : {
+            path : 'posts'
+        }
+    });
+    res.render('home',{communities,user});
 })
 
 // Community Endpoints
@@ -79,6 +87,7 @@ app.use('/community',communityRoutes);
 const userRoutes = require('./routes/user');
 app.use('/user',userRoutes);
 
+//Post Endpoints
 const postRoutes = require('./routes/post');
 app.use('/community/:id',postRoutes);
 
