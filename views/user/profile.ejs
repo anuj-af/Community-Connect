@@ -5,3 +5,9 @@
     <a href="/user/<%=user.id%>/profile/edit">Edit profile</a>
     <br>
     <a href="/">Home</a>
+
+    <h5>Communities you follow : </h5>
+
+    <% for( let community of user.followings) { %>
+        <h6><%=community.name%></h6>
+    <% } %>

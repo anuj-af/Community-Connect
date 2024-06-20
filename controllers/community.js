@@ -1,4 +1,5 @@
 const Community = require('../models/community');
+const User = require('../models/user');
 const CustomError=require('../utils/CustomError');
 const catchAsync=require('../utils/catchAsync');
 
@@ -7,10 +8,12 @@ module.exports.newForm = (req,res) => {
 }
 module.exports.createCommunity = catchAsync(async (req,res,next) => {
         try{
-            const{name,description} = req.body;
+
+            const {name,description,profileImg} = req.body;
             const admin = req.user;
-            const community = await new Community({name,description,admin}); 
-             await community.save();
+
+            const community = await new Community({name,description,profileImg,admin});
+            await community.save();
             res.redirect(`/community/${community._id}`);
 
         }
@@ -27,7 +30,7 @@ module.exports.showCommunity = catchAsync(async (req,res,next) => {
             populate:{
                 path:'author'   
             }
-        });
+        }).populate('admin');
         res.render('community/show', {community});
     }
     catch(e){
@@ -66,3 +69,31 @@ module.exports.updateCommunity =catchAsync(async (req,res,next) => {
     }
 
 })
+
+module.exports.follow = async (req, res, next) => {
+
+    try {
+        const {id} = req.params;
+        const userId = req.user._id;
+        const community=await Community.findById(id);
+        const user = await User.findById(userId);
+
+        const userFollowed = community.followers.includes(userId);
+
+        if (userFollowed) {
+            community.followers = community.followers.filter(follows => follows.toString() !== userId.toString());
+            user.followings = user.followings.filter(following => following.toString() !== id.toString());
+        } else {
+            community.followers.push(userId);
+            user.followings.push(id);
+        }
+
+        await community.save();
+        await user.save();
+
+        res.redirect(`/community/${id}`);
+
+    } catch (e) {
+        next(new CustomError("Unable to follow :(", 400));
+    }
+}
