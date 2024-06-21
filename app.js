@@ -1,3 +1,9 @@
+
+if(process.env.NODE_ENV!=='production'){
+    require('dotenv').config();
+}
+
+
 const express = require('express');
 const ejsMate = require('ejs-mate');
 const path = require('path');
@@ -74,7 +80,7 @@ app.get('/',isLoggedIn,async (req,res) => {
         populate : {
             path : 'posts'
         }
-    });
+    })
     res.render('home',{communities,user});
 })
 
@@ -82,6 +88,9 @@ app.get('/',isLoggedIn,async (req,res) => {
 const communityRoutes = require('./routes/community');
 app.use('/community',communityRoutes);
 
+//chat Endpoints
+const chatRoutes = require('./routes/chat');
+app.use('/community/:id',chatRoutes);
 
 //User EndPoints
 const userRoutes = require('./routes/user');

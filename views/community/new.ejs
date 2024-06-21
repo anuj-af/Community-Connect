@@ -3,7 +3,7 @@
 <div class="container col-md-4">
     <h1 class="mb-4">Create New Community</h1>
 
-    <form action="/community/new" method="post" class="row g-3 needs-validation" novalidate>
+    <form action="/community/new" method="post" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
 
 
         <div class="row-md-4 mb-3">
@@ -13,6 +13,8 @@
               Looks good!
             </div>
         </div>
+        
+        <input type="file" name="communityProfile" id="communityProfile">
 
         <div class="row-md-4 mb-3">
             <label for="description" class="form-label">Description</label>

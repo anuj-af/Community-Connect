@@ -1,6 +1,7 @@
 const {communitySchema, userSchema} = require('./schemas');
 const CustomError = require('./utils/CustomError');
 
+
 module.exports.validateCommunity = (req,res,next) => {
 
     const { error } = communitySchema.validate(req.body);
@@ -46,5 +47,21 @@ module.exports.storeReturnTo = (req, res, next) => {
         res.locals.returnTo = req.session.returnTo;
     }
     next();
+
+}
+
+module.exports.followsCommunity = (req,res,next) => {
+
+    const {id} = req.params;
+    const user = req.user;
+
+    const present = user.followings.includes(id.toString());
+
+    if(!present){
+        next(new CustomError("you need to join community first !!",400));
+    }
+    else{
+        next();
+    }
 
 }

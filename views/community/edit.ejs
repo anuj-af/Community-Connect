@@ -4,7 +4,7 @@
 <div class="container col-md-4">
     <h1 class="mb-4">Edit Community</h1>
 
-    <form action="/community/<%= community._id %>/edit?_method=PATCH" method="post" class="row g-3 needs-validation" novalidate>
+    <form action="/community/<%= community._id %>/edit?_method=PATCH" method="post" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
 
 
         <div class="row-md-4 mb-3">
@@ -22,6 +22,14 @@
               Looks good!
             </div>
         </div>
+
+        <input type="file" name="communityProfile" id="communityProfile">
+
+        <!-- <img src="<%=//community.image.url%>" alt="" class="img-thumbnail" >
+            <div class="form-check-inline">
+                <input type="checkbox" name="deleteImage" id="image" value="<%=community.image.filename%>">
+                <label for="image">Delete ?</label>
+            </div> -->
 
         <button class="btn btn-primary mt-4" type="submit">Update</button>
 

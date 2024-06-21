@@ -1,3 +1,4 @@
+const { cloudinary } = require('../cloudinary');
 const Community = require('../models/community');
 const User = require('../models/user');
 const CustomError=require('../utils/CustomError');
@@ -9,10 +10,11 @@ module.exports.newForm = (req,res) => {
 module.exports.createCommunity = catchAsync(async (req,res,next) => {
         try{
 
-            const {name,description,profileImg} = req.body;
+            const {name,description} = req.body;
             const admin = req.user;
-
-            const community = await new Community({name,description,profileImg,admin});
+            const community = await new Community({name,description,admin});
+            const {path,filename}=req.file;
+            community.image = {url : path,filename : filename};
             await community.save();
             res.redirect(`/community/${community._id}`);
 
@@ -62,6 +64,17 @@ module.exports.editForm = catchAsync(async (req,res,next) => {
 module.exports.updateCommunity =catchAsync(async (req,res,next) => {
     try{
         const community = await Community.findByIdAndUpdate(req.params.id, req.body, { runValidators: true, new: true });
+        const file = community.image.filename;
+        if(req.file){
+            
+            await cloudinary.uploader.destroy(file);
+
+            const {path,filename}=req.file;
+            community.image = {url : path,filename : filename};
+            community.save();
+        }
+        
+        
         res.redirect(`/community/${community._id}`);
     }
     catch(e){
