@@ -37,7 +37,7 @@ module.exports.createPost = async (req, res, next) => {
         res.redirect(`/community/${id}`);
 
     } catch (e) {
-        console.log(e);
+        
         next(new CustomError("Unable to create new post", 400));
     }
 
@@ -63,7 +63,6 @@ module.exports.upvote = async (req, res, next) => {
     try {
         const { postId, id } = req.params;
         const redirect=req.query.q;
-        console.log(redirect);
 
         const userId = req.user._id;
 
@@ -92,6 +91,7 @@ module.exports.downvote = async (req, res, next) => {
 
     try {
         const { postId, id } = req.params;
+        const redirect=req.query.q;
         const userId = req.user._id;
 
         const post = await Post.findById(postId);
@@ -104,7 +104,11 @@ module.exports.downvote = async (req, res, next) => {
         }
 
         await post.save();
-        res.redirect(`/community/${id}`);
+        if(redirect === "home"){
+            res.redirect('/');
+        }else{
+            res.redirect(`/community/${id}`);
+        }
     } catch (e) {
         next(new CustomError("", 400));
     }

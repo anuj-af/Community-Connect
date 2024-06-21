@@ -1,13 +1,53 @@
 <% layout('layouts/boilerplate') %>
-    <h1><%=user.username%></h1>
-    <h4><%=user.email%></h4>
+    <!-- <h1></h1>
+    <h4></h4>
     <br>
-    <a href="/user/<%=user.id%>/profile/edit">Edit profile</a>
+    <%=user.email%>
     <br>
+    <
+
     <a href="/">Home</a>
 
     <h5>Communities you follow : </h5>
+-->
+     
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card" style="width: 28rem;">
+                    <img src="https://wallpapers.com/images/high/minimalist-simple-linkedin-background-t6so1dkoxvwvwo8b.webp" class = "card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title"><%=user.username%></h5>
+                      <p class="card-text"><%=user.email%></p>
+                      <a href="/user/<%=user.id%>/profile/edit" class="btn btn-primary">Edit profile</a>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-6">
+                <ul class="list-group list-group-light">
+                    <h4>Communites you follow </h4>
+                    <% for( let community of user.followings) { %>
+                        <h6></h6>
+                         <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      <div class="d-flex align-items-center">
+                                        <img src=<%=community.profileImg%> alt="" style="width: 45px; height: 45px"
+                                          class="rounded-circle" />
+                                        <div class="ms-3">
+                                          <p class="fw-bold mb-1"><%=community.name%></p>
+                                          <p class="text-muted mb-0"><%=community.description%></p>
+                                        </div>
+                                      </div>
+                                <a class="btn btn-link btn-rounded btn-sm" href="/community/<%=community.id%>" role="button">View</a>
+                            </li>
+                    <% } %>
+                  </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        import { Ripple, initMDB } from "mdb-ui-kit";
 
-    <% for( let community of user.followings) { %>
-        <h6><%=community.name%></h6>
-    <% } %>
+        initMDB({ Ripple });
+    </script>
