@@ -6,7 +6,7 @@
             <div class="col-4">
         
                 <div class="card mb-3"  style="width: 18rem;">
-                    <img src="<%=community.image.url%>" class="card-img-top" alt="..." width="250px" height="150px">
+                    <img src="<%=community.image.url%>" class="card-img-top mb-3" alt="..." width="250px" height="150px">
                     <div class="card-body">
                       <h5 class="card-title"><%= community.name %></h5>
                       <p class="card-text"><%= community.description %></p>
@@ -37,11 +37,11 @@
                 <% for(let post of community.posts) { %>
                     <div class="card mb-3">
                         <div class="card-body">
-        
+                            <img src="<%=post.image.url%>" alt="" class="card-img-top mb-3">
                             <div id="post-<%=post._id%>">
                                 <h5 class="card-title"><%= post.title %></h5>
                                 <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
-                                <p class="card-subtitle"><%= post.content %></p>
+                                <p class="card-subtitle mb-3"><%= post.content %></p>
                                  
                                     <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote">
                                         <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
@@ -65,13 +65,17 @@
         
                             </div>
         
-                            <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;">
-                                <div class="form-group">
-                                    <label for="title-<%= post._id %>">Title</label>
+                            <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;" enctype="multipart/form-data">
+                                <div class="form-group mb-3">
+                                    <label for="postImage">change image : </label>
+                                    <input type="file" name="postImage" id="postImage">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="title-<%= post._id %>">Title : </label>
                                     <input type="text" class="form-control" id="title-<%= post._id %>" name="title" value="<%= post.title %>">
                                 </div>
-                                <div class="form-group">
-                                    <label for="content-<%= post._id %>">Content</label>
+                                <div class="form-group mb-3">
+                                    <label for="content-<%= post._id %>">Content : </label>
                                     <textarea class="form-control" id="content-<%= post._id %>" name="content"><%= post.content %></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-sm">Save Changes</button>

@@ -43,7 +43,9 @@ const communitySchema = new mongoose.Schema({
 communitySchema.post('findOneAndDelete',async function(data) {
 
     if(data){
-        await Post.deleteMany({_id:{$in:data.posts}});
+        for(let post of data.posts){
+            await Post.findByIdAndDelete(post._id);
+        }
         const file=data.image.filename;
         await cloudinary.uploader.destroy(file);
     }

@@ -3,9 +3,12 @@
 <div class="container col-md-4">
     <h1>Register</h1>
 
-    <form action="/user/register" method="post" class="row g-3 needs-validation" novalidate>
+    <form action="/user/register" method="post" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
 
-
+        <div class="row-md-4 mb-3">
+          <label for="userImage">Add profile image : </label>
+          <input type="file" name="userImage" id="userImage">
+        </div>
         <div class="row-md-4 mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required>

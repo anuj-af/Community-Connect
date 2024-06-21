@@ -4,12 +4,17 @@ const passport=require('passport');
 const localStreategy=require('passport-local');
 const userController=require('../controllers/user');
 
+
+const {storage} = require('../cloudinary');
+const multer=require('multer');
+const upload=multer({storage});
+
 const User = require('../models/user');
 const { storeReturnTo, validateUser } = require('../middleware');
 
 router.route('/register')
     .get(userController.renderRegister)
-    .post(validateUser,userController.register)
+    .post(upload.single('userImage'),validateUser,userController.register)
 
 router.route('/login')
     .get(userController.renderLogin)
@@ -27,7 +32,7 @@ router.get('/:userId/profile',userController.getProfile)
 
 router.route('/:userId/profile/edit')
     .get(userController.renderProfileEdit)
-    .patch(validateUser,userController.editProfile)
+    .patch(upload.single('userImage'),validateUser,userController.editProfile)
 
 
 router.get('/logout',userController.logout)

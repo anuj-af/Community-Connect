@@ -1,6 +1,7 @@
 const Post = require('../models/post');
 const CustomError = require('../utils/CustomError');
 const Community = require('../models/community');
+const {cloudinary} =require('../cloudinary/index');
 
 
 module.exports.renderPost = (req, res, next) => {
@@ -27,13 +28,13 @@ module.exports.createPost = async (req, res, next) => {
             content,
             author: userId
         })
-
+        if(req.file){
+            const {path,filename}=req.file;
+            post.image = {url : path,filename : filename};
+        }
         await post.save();
-
         community.posts.push(post);
-
         await community.save();
-
         res.redirect(`/community/${id}`);
 
     } catch (e) {
@@ -48,7 +49,17 @@ module.exports.editPost = async (req, res, next) => {
         const { title, content } = req.body;
         const { id, postId } = req.params;
         const post = await Post.findByIdAndUpdate(postId, { title, content }, { new: true, runValidators: true });
+        const file = post.image.filename;
+
+        if(req.file){
+            
+            await cloudinary.uploader.destroy(file);
+
+            const {path,filename}=req.file;
+            post.image = {url : path,filename : filename};
+        }
         await post.save();
+
         res.redirect(`/community/${id}`);
     } catch (e) {
         next(new CustomError("Internal Server Error", 500));

@@ -1,3 +1,4 @@
+const path = require('path');
 const { cloudinary } = require('../cloudinary');
 const Community = require('../models/community');
 const User = require('../models/user');
@@ -13,8 +14,10 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
             const {name,description} = req.body;
             const admin = req.user;
             const community = await new Community({name,description,admin});
-            const {path,filename}=req.file;
-            community.image = {url : path,filename : filename};
+            if(req.file){
+                const {path,filename}=req.file;
+                community.image = {url : path,filename : filename};
+            }
             await community.save();
             res.redirect(`/community/${community._id}`);
 
@@ -43,7 +46,12 @@ module.exports.showCommunity = catchAsync(async (req,res,next) => {
 
 module.exports.deleteCommunity = catchAsync(async (req,res,next) => {
     try{
-        const community = await Community.findByIdAndDelete(req.params.id);
+        const community = await Community.findByIdAndDelete(req.params.id).populate({
+            path : 'posts',
+            populate : {
+                path : 'image'
+            }
+        });
         res.redirect('/');
     }
     catch(e){

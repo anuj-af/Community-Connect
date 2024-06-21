@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-6">
                 <div class="card" style="width: 28rem;">
-                    <img src="https://wallpapers.com/images/high/minimalist-simple-linkedin-background-t6so1dkoxvwvwo8b.webp" class = "card-img-top" alt="...">
+                    <img src="<%=user.image.url%>" class = "card-img-top" alt="...">
                     <div class="card-body">
                       <h5 class="card-title"><%=user.username%></h5>
                       <p class="card-text"><%=user.email%></p>
@@ -31,7 +31,7 @@
                         <h6></h6>
                          <li class="list-group-item d-flex justify-content-between align-items-center">
                                       <div class="d-flex align-items-center">
-                                        <img src=<%=community.profileImg%> alt="" style="width: 45px; height: 45px"
+                                        <img src=<%=community.image.url%> alt="" style="width: 45px; height: 45px"
                                           class="rounded-circle" />
                                         <div class="ms-3">
                                           <p class="fw-bold mb-1"><%=community.name%></p>

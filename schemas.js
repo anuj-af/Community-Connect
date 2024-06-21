@@ -10,5 +10,6 @@ module.exports.communitySchema = joi.object({
 module.exports.userSchema = joi.object({
     username:joi.string().required(),
     email:joi.string().required().email(),
-    password:joi.string()
+    password:joi.string(),
+    userImage:joi.string().allow(null).allow('')
 });

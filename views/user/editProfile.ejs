@@ -3,8 +3,12 @@
 <div class="container col-md-4">
     <h1>Edit</h1>
 
-    <form action="/user/<%= user._id %>/profile/edit?_method=patch" method="post" class="row g-3 needs-validation" novalidate>
+    <form action="/user/<%= user._id %>/profile/edit?_method=patch" method="post" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
 
+        <div class="row-md-4 mb-3">
+            <label for="userImage">Change profile image : </label>
+            <input type="file" name="userImage" id="userImage">
+          </div>
 
         <div class="row-md-4 mb-3">
             <label for="username" class="form-label">Username</label>
