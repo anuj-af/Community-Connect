@@ -5,6 +5,8 @@ const methodOverride = require('method-override')
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const GitHubStrategy = require('passport-github').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const {Server} = require("socket.io");
 const { createServer } = require('node:http');
@@ -30,9 +32,58 @@ app.use(session({
     }
   }))
 
+
+
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()))
+// Local strategy
+passport.use(new LocalStrategy(User.authenticate()));
+// GitHub strategy
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: "http://127.0.0.1:3000/user/login/github/callback"
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+        let user = await User.findOne({ githubId: profile.id });
+        if (!user) {
+            user = new User({
+                githubId: profile.id,
+                username: profile.username,
+                profileUrl: profile.profileUrl,
+                avatarUrl: profile._json.avatar_url
+            });
+            await user.save();
+        }
+        return done(null, user);
+    } catch (err) {
+        return done(err, null);
+    }
+}));
+// Google strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://127.0.0.1:3000/user/login/google/callback"
+  },
+  async (token, tokenSecret, profile, done) => {
+      try {
+          let user = await User.findOne({ googleId: profile.id });
+          if (!user) {
+              user = new User({
+                  googleId: profile.id,
+                  username: profile.displayName,
+                  profileUrl: profile._json.url,
+                  avatarUrl: profile.photos[0].value
+              });
+              await user.save();
+          }
+          return done(null, user);
+      } catch (err) {
+          return done(err, null);
+      }
+}));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -113,6 +164,19 @@ io.on('connection', (socket) => {
         console.log('Client disconnected');
     });
 });
+
+// GitHub Authentication Routes
+app.get('/auth/github',
+    passport.authenticate('github', { scope: ['user:email'] })
+);
+
+app.get('/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/user/login' }),
+    (req, res) => {
+        // Successful authentication, redirect home.
+        res.redirect('/');
+    }
+);
 
 server.listen(3000, () => {
     console.log("Serving on port 3000");

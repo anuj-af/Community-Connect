@@ -6,12 +6,14 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     username : {
         type : String,
-        required : true
     },
     email : {
         type : String,
-        required : true,
     },
+    googleId: String,
+    githubId: String,
+    profileUrl: String,
+    avatarUrl: String,
     //password will be automatically set by passport local mongoose
     followings : [
         {
@@ -19,7 +21,6 @@ const userSchema = new Schema({
             ref : 'Community'
         }
     ]
-    
 }) 
 
 userSchema.plugin(PassportLocalMongoose);
