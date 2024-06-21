@@ -39,7 +39,6 @@ app.use(session({
   }))
 
 
-
 app.use(passport.initialize());
 app.use(passport.session());
 // Local strategy
@@ -151,6 +150,10 @@ app.use('/user',userRoutes);
 const postRoutes = require('./routes/post');
 app.use('/community/:id',postRoutes);
 
+//Password Reseting Endpoints
+const resetPasswordRoutes = require('./routes/resetPassword');
+app.use('/user',resetPasswordRoutes);
+
 app.use((err,req,res,next)=>{
     
     const {message,statusCode=500}=err;
@@ -170,19 +173,6 @@ io.on('connection', (socket) => {
         console.log('Client disconnected');
     });
 });
-
-// GitHub Authentication Routes
-app.get('/auth/github',
-    passport.authenticate('github', { scope: ['user:email'] })
-);
-
-app.get('/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/user/login' }),
-    (req, res) => {
-        // Successful authentication, redirect home.
-        res.redirect('/');
-    }
-);
 
 server.listen(3000, () => {
     console.log("Serving on port 3000");

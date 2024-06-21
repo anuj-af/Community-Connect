@@ -34,7 +34,6 @@ router.route('/:userId/profile/edit')
     .get(userController.renderProfileEdit)
     .patch(upload.single('userImage'),validateUser,userController.editProfile)
 
-
 router.get('/logout',userController.logout)
 
 module.exports=router;

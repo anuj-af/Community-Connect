@@ -21,6 +21,8 @@ const userSchema = new Schema({
             ref : 'Community'
         }
     ],
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     image : {
         url : {
             type : String,
