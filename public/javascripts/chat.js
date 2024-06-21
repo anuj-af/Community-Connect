@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messagesContainer.appendChild(messageElement);
     });
 
+
     const sendMessageForm = document.getElementById('sendMessageForm');
     sendMessageForm.addEventListener('submit', (event) => {
         event.preventDefault();

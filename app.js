@@ -82,6 +82,9 @@ app.get('/',isLoggedIn,async (req,res) => {
 const communityRoutes = require('./routes/community');
 app.use('/community',communityRoutes);
 
+//chat Endpoints
+const chatRoutes = require('./routes/chat');
+app.use('/community/:id',chatRoutes);
 
 //User EndPoints
 const userRoutes = require('./routes/user');

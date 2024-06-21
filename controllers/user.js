@@ -39,7 +39,6 @@ module.exports.getProfile = catchAsync(async (req, res, next) => {
     try {
         const { userId } = req.params;
         const user = await User.findById(userId).populate('followings');
-        console.log(user);
         res.render('user/profile', { user });
 
     }
@@ -63,7 +62,10 @@ module.exports.editProfile = catchAsync(async (req, res,next) => {
     try {
         const { userId } = req.params;
         const user = await User.findByIdAndUpdate(userId, req.body, { runValidators: true, new: true });
-        res.redirect(`/user/${userId}/profile`);
+        req.login(user, err => {
+            if (err) return next(err);
+            res.redirect(`/user/${user._id}/profile`);
+        })
     }
     catch (e) {
         next(new CustomError('User not found :(', 400));
