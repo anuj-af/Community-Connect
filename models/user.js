@@ -20,7 +20,9 @@ const userSchema = new Schema({
             type : Schema.Types.ObjectId,
             ref : 'Community'
         }
-    ]
+    ],
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 }) 
 
 userSchema.plugin(PassportLocalMongoose);

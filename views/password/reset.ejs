@@ -1,0 +1,17 @@
+<% layout('layouts/boilerplate') %>
+<main class="mx-5 mt-5">
+    <div class="container">
+        <h1>Reset Password</h1>
+        <form action="/user/reset/<%= token %>" method="POST">
+            <div class="mb-3">
+                <label for="password" class="form-label">New Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm" name="confirm" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Reset Password</button>
+        </form>
+    </div>
+</main>

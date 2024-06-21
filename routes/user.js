@@ -29,7 +29,6 @@ router.route('/:userId/profile/edit')
     .get(userController.renderProfileEdit)
     .patch(validateUser,userController.editProfile)
 
-
 router.get('/logout',userController.logout)
 
 module.exports=router;
