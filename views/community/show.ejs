@@ -4,18 +4,27 @@
         <div class="row">
     
             <div class="col-4">
-        
+            
                 <div class="card mb-3"  style="width: 18rem;">
                     <img src="<%=community.image.url%>" class="card-img-top mb-3" alt="..." width="250px" height="150px">
                     <div class="card-body">
                       <h5 class="card-title"><%= community.name %></h5>
                       <p class="card-text"><%= community.description %></p>
                       <p class="card-text">Followers :  <%= community.followers ? community.followers.length : 0 %></p>
-                      <form class="mb-3" method="post" id="follow" action="/community/<%= community._id %>/follow">
-                        <button class="btn btn-info">Join</button>
-                    </form>
+
+                      <% if (community.category == 'public') { %>
+                       
+                            <form class="mb-3" method="post" id="follow" action="/community/<%= community._id %>/follow">
+                                <button class="btn btn-info">Join</button>
+                            </form>
+
+                      <% }else {%>
+                            <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>')">Request</button>
+
+                      <% } %>
+                      
                     <br>
-        
+                
                     <a href="/community/<%= community._id %>/chat" class="btn btn-primary mb-3">Community Chat</a>
                     <br>
                     <a href="/community/<%= community._id %>/post/new" class="btn btn-success mb-3">Add New Post</a>
@@ -62,7 +71,7 @@
         
                                 <% } %>
                                     
-        
+                            
                             </div>
         
                             <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;" enctype="multipart/form-data">
@@ -88,9 +97,36 @@
         </div>
 
     </div>
-    
+
+    <% if (community.category == 'private' && currentUser && (currentUser._id.toString() === community.admin._id.toString())) { %>
+     
+        <h4>Requests</h4>
+        <% for(let request of community.requests){ %>
+
+            <div id="btn-<%=request._id%>">
+                <h4><%= request.username %></h4>
+                <button onclick="acceptRequest('<%=request._id%>','<%=community._id%>')">Accept</button>
+            </div>
+
+        <% } %>
+    <% } %>
 </main>
 
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+    const socket = new io();
+    function acceptRequest(userId,communityId){
+
+        socket.emit("acceptRequest",userId,communityId);
+
+    }
+
+    function sendRequest(userId,communityId){
+        socket.emit("sendRequest",userId,communityId);
+    }
+
+</script>
+
 <script src="/javascripts/editPost.js"></script>
-
-

@@ -3,7 +3,8 @@ const joi = require('joi');
 module.exports.communitySchema = joi.object({
     name:joi.string().required(),
     description:joi.string(),
-    communityProfile:joi.string().allow(null).allow('')
+    communityProfile:joi.string().allow(null).allow(''),
+    category:joi.string()
 });
 
 

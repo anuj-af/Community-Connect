@@ -11,13 +11,16 @@ module.exports.newForm = (req,res) => {
 module.exports.createCommunity = catchAsync(async (req,res,next) => {
         try{
 
-            const {name,description} = req.body;
+            // console.log(req.body);
+
+            const {name,description,category} = req.body;
             const admin = req.user;
-            const community = await new Community({name,description,admin});
+            const community = await new Community({name,description,admin,category});
             if(req.file){
                 const {path,filename}=req.file;
                 community.image = {url : path,filename : filename};
             }
+            // console.log(community);
             await community.save();
             res.redirect(`/community/${community._id}`);
 
@@ -35,7 +38,7 @@ module.exports.showCommunity = catchAsync(async (req,res,next) => {
             populate:{
                 path:'author'   
             }
-        }).populate('admin');
+        }).populate('admin').populate('requests');
         res.render('community/show', {community});
     }
     catch(e){

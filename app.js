@@ -172,6 +172,35 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Client disconnected');
     });
+
+    socket.on('acceptRequest',async (userId,communityId) => {
+        
+        const user = await User.findById(userId);
+        const community = await Community.findById(communityId);
+
+        community.followers.push(userId);
+        user.followings.push(communityId);
+
+        community.requests = community.requests.filter(request => request.toString() !== userId.toString());
+
+        console.log(community);
+
+        await community.save();
+        await user.save();
+
+        // io.emit('reqAccepted',userId);
+
+    })
+
+    socket.on('sendRequest',async(userId,communityId) => {
+
+        const community = await Community.findById(communityId);
+        await community.requests.push(userId);
+
+        console.log(community);
+
+        await community.save();
+    })
 });
 
 server.listen(3000, () => {
