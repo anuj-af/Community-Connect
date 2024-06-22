@@ -22,6 +22,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 const User = require('./models/user');
+const Post =require('./models/post');
 const { isLoggedIn } = require('./middleware');
 
 app.use(session({
@@ -152,6 +153,7 @@ app.use('/community/:id',postRoutes);
 
 //Password Reseting Endpoints
 const resetPasswordRoutes = require('./routes/resetPassword');
+const { upvote, downvote } = require('./controllers/post');
 app.use('/user',resetPasswordRoutes);
 
 app.use((err,req,res,next)=>{
@@ -183,12 +185,10 @@ io.on('connection', (socket) => {
 
         community.requests = community.requests.filter(request => request.toString() !== userId.toString());
 
-        console.log(community);
+        // console.log(community);
 
         await community.save();
         await user.save();
-
-        // io.emit('reqAccepted',userId);
 
     })
 
@@ -197,9 +197,38 @@ io.on('connection', (socket) => {
         const community = await Community.findById(communityId);
         await community.requests.push(userId);
 
-        console.log(community);
+        // console.log(community);
 
         await community.save();
+    })
+
+    socket.on('upvote',async(postId,userId)=>{
+        const post = await Post.findById(postId);
+        const userUpvoted = post.upvotes.includes(userId);
+
+        if (userUpvoted) {
+            post.upvotes = post.upvotes.filter(upvote => upvote.toString() !== userId.toString());
+        } else {
+            post.upvotes.push(userId);
+        }
+
+        await post.save();
+        const upvoteCount=post.upvotes.length;
+        io.emit('upvoteCount',upvoteCount,postId,userId);
+    })
+    socket.on('downvote',async(postId,userId)=>{
+        const post = await Post.findById(postId);
+        const userDownvoted = post.downvotes.includes(userId);
+
+        if (userDownvoted) {
+            post.downvotes = post.downvotes.filter(downvote => downvote.toString() !== userId.toString());
+        } else {
+            post.downvotes.push(userId);
+        }
+
+        await post.save();
+        const downvoteCount=post.downvotes.length;
+        io.emit('downvoteCount',downvoteCount,postId,userId);
     })
 });
 

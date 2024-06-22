@@ -18,9 +18,9 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
             const community = await new Community({name,description,admin,category});
             if(req.file){
                 const {path,filename}=req.file;
-                community.image = {url : path,filename : filename};
+                community.image = {url : path, filename : filename};
             }
-            // console.log(community);
+            console.log(community);
             await community.save();
             res.redirect(`/community/${community._id}`);
 

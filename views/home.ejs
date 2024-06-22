@@ -14,12 +14,11 @@
                                 <p class="card-text"><small class="text-body-secondary">Posted in community : <%=community.name%></small></p>
                                 <p class="card-subtitle"><%= post.content %></p>
                                  
-                                    <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote?q=home">
-                                        <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
-                                    </form>
-                                    <form class="d-inline" method="post" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote?q=home">
-                                        <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
-                                    </form>
+                                <button class="btn btn-primary" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">&#8679; </button>
+                                <p class="d-inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
+                                
+                                <button class="btn btn-secondary" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">&#8681;</button>
+                                <p class="d-inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
                             </div>
                             </div>
                             </div>
@@ -64,16 +63,5 @@
         
     </main>
 
-
-    
-
-    
-        <!-- <div class="card mb-3" style="width: 12rem;">
-            <img src= class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"></p>
-            <a href="/community/<%= //community._id %>" class="btn btn-primary">Explore <%=//community.name%></a>
-            </div>
-        </div>
-     -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/socket.js"></script>

@@ -19,10 +19,6 @@ router.route('/post/new')
 
 router.patch('/post/:postId/edit',upload.single('postImage'), catchAsync(postController.editPost))
 
-router.post('/post/:postId/upvote',isLoggedIn,catchAsync(postController.upvote))
-
-router.post('/post/:postId/downvote',isLoggedIn,catchAsync(postController.downvote))
-
 router.delete('/post/:postId', catchAsync(postController.deletePost))
 
 module.exports = router;

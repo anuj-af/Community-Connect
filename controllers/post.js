@@ -68,64 +68,6 @@ module.exports.editPost = async (req, res, next) => {
 
 }
 
-module.exports.upvote = async (req, res, next) => {
-
-    try {
-        const { postId, id } = req.params;
-        const redirect = req.query.q;
-
-        const userId = req.user._id;
-
-        const post = await Post.findById(postId);
-        const userUpvoted = post.upvotes.includes(userId);
-
-        if (userUpvoted) {
-            post.upvotes = post.upvotes.filter(upvote => upvote.toString() !== userId.toString());
-        } else {
-            post.upvotes.push(userId);
-        }
-
-        await post.save();
-        if (redirect === "home") {
-            res.redirect('/');
-        } else {
-            res.redirect(`/community/${id}`);
-        }
-
-    } catch (e) {
-        next(new CustomError("", 400));
-    }
-}
-
-module.exports.downvote = async (req, res, next) => {
-
-    try {
-        const { postId, id } = req.params;
-        const redirect = req.query.q;
-
-        const userId = req.user._id;
-
-        const post = await Post.findById(postId);
-        const userDownvoted = post.downvotes.includes(userId);
-
-        if (userDownvoted) {
-            post.downvotes = post.downvotes.filter(downvote => downvote.toString() !== userId.toString());
-        } else {
-            post.downvotes.push(userId);
-        }
-
-        await post.save();
-        if (redirect === "home") {
-            res.redirect('/');
-        } else {
-            res.redirect(`/community/${id}`);
-        }
-    } catch (e) {
-        next(new CustomError("", 400));
-    }
-
-
-};
 
 module.exports.deletePost = async (req, res, next) => {
 

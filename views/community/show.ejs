@@ -19,7 +19,7 @@
                             </form>
 
                       <% }else {%>
-                            <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>')">Request</button>
+                            <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>') " class="btn btn-primary mb-3">Request</button>
 
                       <% } %>
                       
@@ -51,13 +51,19 @@
                                 <h5 class="card-title"><%= post.title %></h5>
                                 <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
                                 <p class="card-subtitle mb-3"><%= post.content %></p>
-                                 
-                                    <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/upvote">
-                                        <button class="btn btn-primary btn-sm">Upvote <%= post.upvotes ? post.upvotes.length : 0 %></button>
-                                    </form>
-                                    <form class="d-inline" method="post" id="downvoteBtn" action="/community/<%= community._id %>/post/<%= post._id %>/downvote">
-                                        <button class="btn btn-secondary btn-sm">Downvote <%= post.downvotes ? post.downvotes.length : 0 %></button>
-                                    </form>
+
+                                    <button class="btn btn-primary" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">&#8679; </button>
+                                    <p class="d-inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
+                                    
+                                    <button class="btn btn-secondary" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">&#8681;</button>
+                                    <p class="d-inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
+                                    
+                                    <!-- <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= //community._id %>/post/<%=// post._id %>/upvote">
+                                        <button class="btn btn-primary btn-sm">Upvote</button>
+                                    </form> -->
+                                    <!-- <form class="d-inline" method="post" id="downvoteBtn" action="/community/<%= //community._id %>/post/<%= //post._id %>/downvote">
+                                        <button class="btn btn-secondary btn-sm">Downvote <%=// post.downvotes ? post.downvotes.length : 0 %></button>
+                                    </form> -->
         
                                 <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
                                  
@@ -100,33 +106,22 @@
 
     <% if (community.category == 'private' && currentUser && (currentUser._id.toString() === community.admin._id.toString())) { %>
      
-        <h4>Requests</h4>
-        <% for(let request of community.requests){ %>
-
-            <div id="btn-<%=request._id%>">
-                <h4><%= request.username %></h4>
-                <button onclick="acceptRequest('<%=request._id%>','<%=community._id%>')">Accept</button>
-            </div>
-
+        <% if (community.requests.length) { %>
+            <h4>Requests : </h4>
+            <% for(let request of community.requests){ %>
+    
+                <div id="btn-<%=request._id%>">
+                    <h4><%= request.username %></h4>
+                    <button onclick="acceptRequest('<%=request._id%>','<%=community._id%>')" class="btn btn-success">Accept</button>
+                </div>
+    
+            <% } %>
         <% } %>
     <% } %>
 </main>
 
 <script src="/socket.io/socket.io.js"></script>
 
-<script>
-
-    const socket = new io();
-    function acceptRequest(userId,communityId){
-
-        socket.emit("acceptRequest",userId,communityId);
-
-    }
-
-    function sendRequest(userId,communityId){
-        socket.emit("sendRequest",userId,communityId);
-    }
-
-</script>
+<script src="/javascripts/socket.js"></script>
 
 <script src="/javascripts/editPost.js"></script>

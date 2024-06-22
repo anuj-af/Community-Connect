@@ -42,11 +42,10 @@ const postSchema = new Schema({
 
 postSchema.post('findOneAndDelete',async function(data) {
     
-    if(data){
+    if(data.image.filename){
         const file=data.image.filename;
         await cloudinary.uploader.destroy(file);
     }
-    
 })
 
 
