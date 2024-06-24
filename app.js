@@ -135,6 +135,10 @@ app.get('/',isLoggedIn,async (req,res) => {
     res.render('home',{communities,user});
 })
 
+app.get('/test', (req,res) => {
+    res.render('test');
+})
+
 // Community Endpoints
 const communityRoutes = require('./routes/community');
 app.use('/community',communityRoutes);
