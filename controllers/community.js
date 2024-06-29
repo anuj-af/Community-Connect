@@ -20,7 +20,6 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
                 const {path,filename}=req.file;
                 community.image = {url : path, filename : filename};
             }
-            console.log(community);
             await community.save();
             res.redirect(`/community/${community._id}`);
 
@@ -78,7 +77,9 @@ module.exports.updateCommunity =catchAsync(async (req,res,next) => {
         const file = community.image.filename;
         if(req.file){
             
-            await cloudinary.uploader.destroy(file);
+            if(file){
+                await cloudinary.uploader.destroy(file);
+            }
 
             const {path,filename}=req.file;
             community.image = {url : path,filename : filename};

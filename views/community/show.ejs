@@ -19,7 +19,9 @@
                             </form>
 
                       <% }else {%>
-                            <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>') " class="btn btn-primary mb-3">Request</button>
+                            <% if (currentUser) { %>
+                                <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>') " class="btn btn-primary mb-3">Request</button>
+                            <% } %>
 
                       <% } %>
                       
@@ -51,12 +53,14 @@
                                 <h5 class="card-title"><%= post.title %></h5>
                                 <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
                                 <p class="card-subtitle mb-3"><%= post.content %></p>
-
-                                    <button class="btn btn-primary" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">&#8679; </button>
-                                    <p class="d-inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
-                                    
-                                    <button class="btn btn-secondary" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">&#8681;</button>
-                                    <p class="d-inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
+                                    <% if (currentUser) { %>
+                                        
+                                        <button class="btn btn-primary" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">&#8679; </button>
+                                        <p class="d-inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
+                                        
+                                        <button class="btn btn-secondary" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">&#8681;</button>
+                                        <p class="d-inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
+                                    <% } %>
                                     
                                     <!-- <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= //community._id %>/post/<%=// post._id %>/upvote">
                                         <button class="btn btn-primary btn-sm">Upvote</button>

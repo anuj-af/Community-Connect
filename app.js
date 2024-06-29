@@ -125,17 +125,22 @@ app.get('/test2',(req,res)=>{
     res.render('test2');
 })
 // Home Endpoint
-app.get('/',isLoggedIn,async (req,res) => {
+app.get('/',async (req,res) => {
 
-    const userId=req.user._id;
-    const communities = await Community.find({});
-    const user=await User.findById(userId).populate({
-        path : 'followings',
-        populate : {
-            path : 'posts'
-        }
-    })
-    res.render('home',{communities,user});
+    const communities = await Community.find({}).populate('posts')
+    if(req.user){
+        const userId=req.user._id;
+        const user=await User.findById(userId).populate({
+            path : 'followings',
+            populate : {
+                path : 'posts'
+            }
+        })
+        res.render('home',{communities,user});
+    }
+    else{
+        res.render('home',{communities});
+    }
 })
 
 app.get('/test', (req,res) => {
