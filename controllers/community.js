@@ -32,13 +32,19 @@ module.exports.createCommunity = catchAsync(async (req,res,next) => {
 
 module.exports.showCommunity = catchAsync(async (req,res,next) => {
     try{
+        const communities = await Community.find({}).populate({
+            path:'posts',
+            populate:{
+                path:'author'   
+            }
+        }).populate('admin').populate('requests');
         const community = await Community.findById(req.params.id).populate({
             path:'posts',
             populate:{
                 path:'author'   
             }
         }).populate('admin').populate('requests');
-        res.render('community/show', {community});
+        res.render('community/show', {community,communities});
     }
     catch(e){
         next(new CustomError("Unable to find the community :( ",400));

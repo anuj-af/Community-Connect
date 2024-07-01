@@ -53,7 +53,9 @@ module.exports.editPost = async (req, res, next) => {
 
         if(req.file){
             
-            await cloudinary.uploader.destroy(file);
+            if(file){
+                await cloudinary.uploader.destroy(file);
+            }
 
             const {path,filename}=req.file;
             post.image = {url : path,filename : filename};

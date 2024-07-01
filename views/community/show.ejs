@@ -1,131 +1,558 @@
-<% layout('layouts/boilerplate') %>
-<main>
-    <div class="container">
-        <div class="row">
-    
-            <div class="col-4">
-            
-                <div class="card mb-3"  style="width: 18rem;">
-                    <img src="<%=community.image.url%>" class="card-img-top mb-3" alt="..." width="250px" height="150px">
-                    <div class="card-body">
-                      <h5 class="card-title"><%= community.name %></h5>
-                      <p class="card-text"><%= community.description %></p>
-                      <p class="card-text">Followers :  <%= community.followers ? community.followers.length : 0 %></p>
+<!DOCTYPE html>
+<html lang="en">
 
-                      <% if (community.category == 'public') { %>
-                       
-                            <form class="mb-3" method="post" id="follow" action="/community/<%= community._id %>/follow">
-                                <button class="btn btn-info">Join</button>
-                            </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #nav {
+      height: 12vh;
+    }
+    #sideMenu {
+      height: 88vh;
+      top: 12vh;
+    }
+    #sideDesc {
+      top: 14vh;
+    }
+    .uploadOuter {
+    text-align: center;
+    padding: 20px;
+    strong {
+      padding: 0 10px
+    }
+    }
+    .dragBox {
+      width: 250px;
+      height: 100px;
+      margin: 0 auto;
+      position: relative;
+      text-align: center;
+      font-weight: bold;
+      line-height: 95px;
+      color: #999;
+      border: 2px dashed #ccc;
+      display: inline-block;
+      transition: transform 0.3s;
+      input[type="file"] {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        top: 0;
+        left: 0;
+      }
+    }
+    .draging {
+      transform: scale(1.1);
+    }
+    #preview {
+      text-align: center;
+      img {
+        max-width: 100%
+      }
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
 
-                      <% }else {%>
-                            <% if (currentUser) { %>
-                                <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>') " class="btn btn-primary mb-3">Request</button>
-                            <% } %>
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  </style>
+</head>
 
-                      <% } %>
-                      
-                    <br>
-                
-                    <a href="/community/<%= community._id %>/chat" class="btn btn-primary mb-3">Community Chat</a>
-                    <br>
-                    <a href="/community/<%= community._id %>/post/new" class="btn btn-success mb-3">Add New Post</a>
-                    <br>
-                        <% if (currentUser && (currentUser._id.toString() === community.admin._id.toString())) { %>
-                        
-                        <form method="POST" action="/community/<%= community._id %>?_method=DELETE">
-                            <button class="btn btn-danger mb-3">Delete Community</button>
-                        </form>
-                        <a href="/community/<%= community._id %>/edit" class="btn btn-warning mb-3">Edit Community</a>
-                        <br>
-                
-                        <% } %>
-                    </div>
-                  </div>
-                    
+<body>
+
+  <nav id="nav" class="sticky inset-x-0 top-0 bg-white border-b dark:bg-gray-200 z-40">
+    <div class="max-w-screen flex flex-wrap items-center justify-between mx-auto p-4">
+      <a href="/" class="flex mr-36 items-center space-x-3 rtl:space-x-reverse">
+        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-500">Community-Connect</span>
+      </a>
+      <div class="flex md:order-1">
+
+        <form class="w-96">
+          <label for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
             </div>
-            <div class="col-8">
-                <% for(let post of community.posts) { %>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <img src="<%=post.image.url%>" alt="" class="card-img-top mb-3">
-                            <div id="post-<%=post._id%>">
-                                <h5 class="card-title"><%= post.title %></h5>
-                                <p class="card-text"><small class="text-body-secondary">Posted By: <%= post.author.username %></small></p>
-                                <p class="card-subtitle mb-3"><%= post.content %></p>
-                                    <% if (currentUser) { %>
-                                        
-                                        <button class="btn btn-primary" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">&#8679; </button>
-                                        <p class="d-inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
-                                        
-                                        <button class="btn btn-secondary" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">&#8681;</button>
-                                        <p class="d-inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
-                                    <% } %>
-                                    
-                                    <!-- <form class="d-inline" method="post" id="upvoteBtn" action="/community/<%= //community._id %>/post/<%=// post._id %>/upvote">
-                                        <button class="btn btn-primary btn-sm">Upvote</button>
-                                    </form> -->
-                                    <!-- <form class="d-inline" method="post" id="downvoteBtn" action="/community/<%= //community._id %>/post/<%= //post._id %>/downvote">
-                                        <button class="btn btn-secondary btn-sm">Downvote <%=// post.downvotes ? post.downvotes.length : 0 %></button>
-                                    </form> -->
+            <input type="search" id="default-search"
+              class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-3xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-100 dark:border-gray-500 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search Mockups, Logos..." required />
+            <button type="submit"
+              class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+          </div>
+        </form>
+
+        <!-- <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search" aria-expanded="false"
+          class="md:hidden  text-gray-500 dark:text-gray-400 bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-100 rounded-lg text-sm p-2.5 me-1">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+          </svg>
+          <span class="sr-only">Search</span>
+        </button>
+        <div class="w-96 relative hidden md:block">
+          <div class="absolute start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-10 text-gray-500 dark:text-gray-400" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+            </svg>
+            <span class="sr-only">Search icon</span>
+          </div>
+          <input type="text" id="search-navbar"
+            class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg dark:bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search...">
+        </div> -->
+        <!-- <button data-collapse-toggle="navbar-search" type="button"
+          class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          aria-controls="navbar-search" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15" />
+          </svg>
+        </button> -->
+      </div>
+      <div class="flex md:order-2">
+        <% if (!currentUser) { %>
+          <a href="/user/login" style="text-decoration: none;">
+          <button type="button"
+            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 my-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Login | Register</button>
         
-                                <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
-                                 
-                                    <form action="/community/<%=community._id%>/post/<%=post._id%>?_method=DELETE" method="POST" class="d-inline">
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                    
-                                        <% if (currentUser._id.toString() === post.author._id.toString()) { %>
-                                            <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="btn btn-warning btn-sm">Edit</button>
-                                        <% } %>
-        
-                                <% } %>
-                                    
-                            
-                            </div>
-        
-                            <form id="editForm-<%= post._id %>" class="edit-form" action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" style="display:none;" enctype="multipart/form-data">
-                                <div class="form-group mb-3">
-                                    <label for="postImage">change image : </label>
-                                    <input type="file" name="postImage" id="postImage">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="title-<%= post._id %>">Title : </label>
-                                    <input type="text" class="form-control" id="title-<%= post._id %>" name="title" value="<%= post.title %>">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="content-<%= post._id %>">Content : </label>
-                                    <textarea class="form-control" id="content-<%= post._id %>" name="content"><%= post.content %></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm('<%= post._id %>')">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
+          </a>
+        <% } %>
         </div>
+
+      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-search">
+        <div class="relative mt-3 md:hidden">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+            </svg>
+          </div>
+          <input type="text" id="search-navbar"
+            class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search...">
+        </div>
+        <!-- <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-400">
+      <li>
+        <a href="#" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
+      </li>
+      <li>
+        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-400">About</a>
+      </li>
+      <li>
+        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 text-gray-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-400">Services</a>
+      </li>
+    </ul> -->
+      </div>
+    </div>
+  </nav>
+
+
+<div class="grid grid-cols-5 gap-4">
+  <div id="sideMenu" class="sticky inset-y-0 top-24 left-0 flex h-screen flex-col justify-between border-e bg-white">
+    <div class="inset-x-0 bottom-0 border-b border-gray-100">
+      <% if (currentUser) { %>
+          <a href="/user/<%=currentUser._id%>/profile" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
+            <span class="grid h-12 w-12 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
+              <img src="/assets/profile1.png" alt="Profile Picture">
+            </span>
+            <div>
+              <p class="text-xs">
+                <strong class="block font-medium"><%=currentUser.username%></strong>
+  
+                <span><%=currentUser.email%></span>
+              </p>
+            </div>
+          </a>
+        <% } %>
+    </div>
+
+    <div class="px-4 py-2 mb-auto">
+      <ul class="mt-6 space-y-1">
+        <li>
+          <a href="/" class="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
+            Home
+          </a>
+        </li>
+
+        <li>
+          <details class="group [&_summary::-webkit-details-marker]:hidden">
+            <summary
+              class="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <span class="text-sm font-medium"> Communities </span>
+
+              <span class="shrink-0 transition duration-300 group-open:-rotate-180">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </span>
+            </summary>
+
+            <ul class="mt-2 space-y-1 px-4">
+              <li>
+                <a href="#"
+                  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                  Followed Communities
+                </a>
+              </li>
+
+              <li>
+                <a href="/"
+                  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                  All Communities
+                </a>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <a href="/community/new"
+            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+            Create Community
+          </a>
+        </li>
+
+        <li>
+          <details class="group [&_summary::-webkit-details-marker]:hidden">
+            <summary
+              class="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <span class="text-sm font-medium"> Account </span>
+
+              <span class="shrink-0 transition duration-300 group-open:-rotate-180">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </span>
+            </summary>
+
+            <ul class="mt-2 space-y-1 px-4">
+              <li>
+                <a href="#"
+                  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                  Details
+                </a>
+              </li>
+
+              <li>
+                <a href="#"
+                  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                  Security
+                </a>
+              </li>
+
+              <li>
+                <% if (currentUser) { %>
+                  <form action="/user/logout">
+                    <button type="submit"
+                      class="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700">
+                      Logout
+                    </button>
+                  </form>
+                <% } %>
+              </li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2">
+      <% if (currentUser) { %>
+        <form action="/user/logout">
+          <button type="submit"
+            class="group relative flex w-full rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 opacity-75" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+            <span
+              class="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible">
+              Logout
+            </span>
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+
+
+    <div class="my-4 mx-4 col-span-3">
+
+      <section class="py-4 mb-6 border-b">
+        <div class="h-48">
+          <div class="w-full h-20 bg-gray-200 rounded-lg mb-4">
+            <img src="<%=community.image.url%>" alt="user-avatar-image" class="border-4 border-solid border-white rounded-full h-24 w-24 relative top-8 left-6 bg-gray-100 z-0">
+            <p class="relative top-6 left-24 font-manrope font-bold text-4xl text-gray-900 mb-1 z-0"><%= community.name %></p>
+            <p class="text-sm truncate dark:text-gray-600 relative top-6 left-24 font-manrope text-4xl text-gray-900 mb-6 z-0"><%= community.description %></p>
+          </div>
+        </div>
+        <div>
+          <% if (community.category == 'public') { %>
+            
+            <% if (currentUser && currentUser.followings.includes(community._id)) { %>
+              
+              <form class="inline-flex" method="post" id="follow" action="/community/<%= community._id %>/follow">
+                  <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
+                    Leave Community
+                  </button>
+              </form>
+              <% } else { %>
+                <form class="inline-flex" method="post" id="follow" action="/community/<%= community._id %>/follow">
+                  <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
+                    Join Community
+                  </button>
+                 </form>
+               <%}%>
+
+              <% }else {%>
+              <% if (currentUser) { %>
+                <button onclick="sendRequest('<%=currentUser._id%>','<%=community._id%>') " class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
+                  Request to Join Community
+                </button>
+              <% } %>
+
+          <% } %>
+          <a href="/community/<%= community._id %>/chat" class="inline-flex">
+            <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-50 text-indigo-600 font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-indigo-100">
+              Community Chat
+            </button>
+          </a>
+          <a href="/community/<%= community._id %>/post/new" class="inline-flex">
+          <button class="rounded-full py-3.5 px-4 inline-flex bg-gray-100 flex items-center group transition-all duration-500 hover:bg-indigo-100 ">
+            <span class="px-2 font-medium text-base leading-7 text-gray-700 transition-all duration-500 group-hover:text-indigo-600">Create Post +</span>
+          </button>
+          </a>
+        </div>
+      </section>
+
+      <% if (!community.posts.length) { %>
+            <div class="flex justify-center">
+              <h1 class="mt-0.5 text-lg text-gray-900">No posts yet !!</h1>
+            </div>
+      <% } else { %>                                    
+      <% for(let post of community.posts) { %>
+        <div class="my-4">
+          <article class="size-full overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+            <div id="post-<%=post._id%>">
+            <div class="bg-white p-4 sm:p-4">
+              <div class="flex-shrink-0">
+                <img class="w-8 h-8 rounded-full inline" src="<%= community.image.url%>"
+                  alt="Neil image">
+                <p class="block text-xs text-gray-500 inline">Posted in community : <%=community.name%></p>
+              </div>
+            </div>
+            <div class="bg-white p-4 sm:p-6">
+              <a href="#">
+                <h3 class="mt-0.5 text-lg text-gray-900"><%= post.title %></h3>
+              </a>
+              
+              <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+                <%= post.content %>
+              </p>
+              <% if (post.image.url) { %>
+                <img alt=""
+                  src="<%=post.image.url%>"
+                  class="h-56 w-full object-cover" style="border-radius: 12px;margin-bottom: 10px;margin-top: 10px;" />
+              <% } %>
+            </div>
+            <% if (currentUser) { %>
+              <div id="post-buttons" class="mb-3 mx-4 flex justify-between"> 
+                <div class="flex items-center space-x-4">
+                  <button class="p-2 border rounded-full hover:bg-gray-100" id="upbtn-<%=post._id%>" onclick="upvote('<%=post._id%>','<%=currentUser._id%>')">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      </svg>
+                  </button>
+                  <p class="inline" id="upcount-<%=post._id%>"><%= post.upvotes ? post.upvotes.length : 0 %></p>
+                  <button class="p-2 border rounded-full hover:bg-gray-100" id="dwnbtn-<%=post._id%>" onclick="downvote('<%=post._id%>','<%=currentUser._id%>')">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                  </button>
+                  <p class="inline" id="downcount-<%=post._id%>"><%= post.downvotes ? post.downvotes.length : 0 %></p>
+                </div>
+                <div>
+                  <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
+                                 
+                    <form action="/community/<%=community._id%>/post/<%=post._id%>?_method=DELETE" method="POST" class="inline">
+                        <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
+                          Delete
+                        </button>
+                    </form>
+                    
+                        <% if (currentUser._id.toString() === post.author._id.toString()) { %>
+                            <button id="editBtn-<%= post._id %>" onclick="toggleEditForm('<%= post._id %>')" class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
+                              Edit
+                            </button>
+                        <% } %>
+
+                <% } %>
+                </div>
+              </div>
+            </div>
+              <!--
+              Heads up! 👋
+
+               Plugins:
+             - @tailwindcss/forms
+              -->
+              <div id="editForm-<%= post._id %>" style="display: none;">              
+                  <section class="bg-gray-100">
+                    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+                      <div class="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
+                        <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-5 lg:p-12">
+                          <form action="/community/<%= community._id %>/post/<%= post._id %>/edit?_method=PATCH" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+                              <div class="mb-3">
+                                <div class="uploadOuter">
+                                  <label for="uploadFile-<%=post._id%>" class="inline-block w-full rounded-lg  bg-indigo-600 px-5 py-3 font-medium text-white sm:w-auto
+                                  transition-all duration-300 hover:shadow-gray-100 hover:bg-indigo-700">Upload Image</label>
+                                  <strong>OR</strong>
+                                  <span class="dragBox">
+                                  Darg and Drop image here
+                                  <input class="hidden" type="file" onChange="dragNdrop(event,'<%=post._id%>')"  ondragover="drag('<%=post._id%>')" ondrop="drop('<%=post._id%>')" id="uploadFile-<%=post._id%>"  name="postImage"/>
+                                  </span>
+                                </div>
+                                <div id="preview-<%=post._id%>"></div>
+                              </div>
+
+                              <label class="sr-only" for="title-<%= post._id %>">Title</label>
+                              <input
+                                class="w-full rounded-lg border border-gray-300 p-3 text-sm "
+                                placeholder="Title"
+                                type="text"
+                                id="title-<%= post._id %>"
+                                value="<%= post.title %>"
+                                name="title"
+                              />
+
+                            <div>
+                              <label class="sr-only" for="content-<%= post._id %>">Content : </label>
+
+                              <textarea
+                                class="w-full rounded-lg border border-gray-300 p-3 text-sm"
+                                placeholder="Message"
+                                rows="8"
+                                id="content-<%=post._id %>"
+                                name="content"
+                              ><%=post.content %></textarea>
+                            </div>
+
+                            <div class="mt-4">
+                              <button
+                                type="submit"
+                                class="inline-block w-full rounded-lg  bg-indigo-600 px-5 py-3 font-medium text-white sm:w-auto
+                                transition-all duration-300 hover:shadow-gray-100 hover:bg-indigo-700"
+                              >
+                                Save Changes
+                              </button>
+                              <button
+                                type="submit"
+                                class="inline-block w-full rounded-lg bg-gray-500 px-5 py-3 font-medium text-white sm:w-auto
+                                transition-all duration-300 hover:shadow-gray-300 hover:bg-gray-600"
+                                onclick="toggleEditForm('<%= post._id %>')"
+                                >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </form>
+            </div>
+            <% } %>
+          </article>
+        </div>
+      <% }%>
+      <%}%> 
+    </div>
+
+    <div class="my-8 mx-4">
+      <div id="sideDesc" class="sticky inset-y-0 top-20 right-0 p-4 bg-white border border-gray-100 rounded-lg shadow sm:p-8 border-gray-100">
+        <div class="flex items-center justify-between mb-4">
+          <h5 class="text-xl font-bold leading-none text-gray-900 text-gray-500">All Communities</h5>
+          <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 ml-3">
+            Scroll for more
+          </a>
+        </div>
+        <div class="flow-root ">
+          <ul role="list" class="divide-y divide-gray-200 overflow-y-auto h-96 no-scrollbar">
+            <% for(let community of communities){ %>
+              <li class="py-3 sm:py-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex-shrink-0">
+                    <img class="w-8 h-8 rounded-full" src="<%= community.image.url %>"
+                      alt="Neil image">
+                  </div>
+                  <div class="flex-1 min-w-0 ms-4">
+                    <p class="text-sm font-medium text-gray-900 truncate text-gray-500">
+                      <%=community.name%>
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                      <%=community.description%>
+                    </p>
+                  </div>
+                  <a href="/community/<%= community._id %>" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+                    View
+                  </a>
+                </div>
+              </li>
+           <% } %>
+          </ul>
+        </div>
+      </div>
 
     </div>
 
-    <% if (community.category == 'private' && currentUser && (currentUser._id.toString() === community.admin._id.toString())) { %>
-     
-        <% if (community.requests.length) { %>
-            <h4>Requests : </h4>
-            <% for(let request of community.requests){ %>
-    
-                <div id="btn-<%=request._id%>">
-                    <h4><%= request.username %></h4>
-                    <button onclick="acceptRequest('<%=request._id%>','<%=community._id%>')" class="btn btn-success">Accept</button>
-                </div>
-    
-            <% } %>
-        <% } %>
-    <% } %>
-</main>
+  </div>
+  
+  <script>
+    function dragNdrop(event,postId) {
+        var fileName = URL.createObjectURL(event.target.files[0]);
+        var preview = document.getElementById(`preview-${postId}`);
+        var previewImg = document.createElement("img");
+        previewImg.setAttribute("src", fileName);
+        preview.innerHTML = "";
+        preview.appendChild(previewImg);
+    }
+    function drag(postId) {
+        document.getElementById(`uploadFile-${postId}`).parentNode.className = 'draging dragBox';
+    }
+    function drop(postId) {
+        document.getElementById(`uploadFile-${postId}`).parentNode.className = 'dragBox';
+    }
+  </script>
 
-<script src="/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 
-<script src="/javascripts/socket.js"></script>
+  <script src="/javascripts/socket.js"></script>
+  
+  <script src="/javascripts/editPost.js"></script>
+</body>
 
-<script src="/javascripts/editPost.js"></script>
+</html>

@@ -124,6 +124,7 @@ const Community = require('./models/community');
 app.get('/test2',(req,res)=>{
     res.render('test2');
 })
+
 // Home Endpoint
 app.get('/',async (req,res) => {
 
