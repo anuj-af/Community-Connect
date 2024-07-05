@@ -180,8 +180,8 @@ app.use((err,req,res,next)=>{
 io.on('connection', (socket) => {
     console.log('New client connected');
 
-    socket.on('sendMessage', (message) => {
-        io.emit('newMessage', message);
+    socket.on('sendMessage', (message,currentUser) => {
+        io.emit('newMessage',message,currentUser);
     });
 
     socket.on('disconnect', () => {

@@ -26,8 +26,9 @@ module.exports.getMessage = catchAsync(async (req, res) => {
 
 module.exports.renderChat = catchAsync(async (req, res) => {
     const { id } = req.params;
+    const communities = await Community.find({});
     const community = await Community.findById(id).populate('followers');
     const messages = await Message.find({ community: id }).populate('sender');
     // console.log(community, messages);
-    res.render('chat/chat', { community, messages });
+    res.render('chat/chat', { community, messages,communities});
 })
