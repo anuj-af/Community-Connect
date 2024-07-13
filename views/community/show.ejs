@@ -314,13 +314,13 @@
             
             <% if (currentUser && currentUser.followings.includes(community._id)) { %>
               
-              <form class="inline-flex" method="post" id="follow" action="/community/<%= community._id %>/follow">
+              <form class="inline-flex" method="get" id="follow" action="/community/<%= community._id %>/follow">
                   <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
                     Leave Community
                   </button>
               </form>
               <% } else { %>
-                <form class="inline-flex" method="post" id="follow" action="/community/<%= community._id %>/follow">
+                <form class="inline-flex" method="get" id="follow" action="/community/<%= community._id %>/follow">
                   <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
                     Join Community
                   </button>
@@ -375,7 +375,7 @@
               <% if (post.image.url) { %>
                 <img alt=""
                   src="<%=post.image.url%>"
-                  class="h-56 w-full object-cover" style="border-radius: 12px;margin-bottom: 10px;margin-top: 10px;" />
+                  class="h-full w-full object-cover object-center" style="border-radius: 12px;margin-bottom: 10px;margin-top: 10px;" />
               <% } %>
             </div>
             <% if (currentUser) { %>
@@ -396,7 +396,6 @@
                 </div>
                 <div>
                   <% if (currentUser && ((currentUser._id.toString() === post.author._id.toString()) || (currentUser._id.toString() === community.admin._id.toString()))) {%>
-                                 
                     <form action="/community/<%=community._id%>/post/<%=post._id%>?_method=DELETE" method="POST" class="inline">
                         <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-600 text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-100 hover:bg-indigo-700">
                           Delete
@@ -413,12 +412,7 @@
                 </div>
               </div>
             </div>
-              <!--
-              Heads up! 👋
 
-               Plugins:
-             - @tailwindcss/forms
-              -->
               <div id="editForm-<%= post._id %>" style="display: none;">              
                   <section class="bg-gray-100">
                     <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">

@@ -24,8 +24,8 @@ router.route('/:id/edit')
     .get(isLoggedIn,communityController.editForm)
     .patch(upload.single('communityProfile'),validateCommunity,communityController.updateCommunity);
 
-// Folow a community
-router.post('/:id/follow',isLoggedIn,communityController.follow);
+// Follow a community
+router.get('/:id/follow',isLoggedIn,communityController.follow);
 
 // router.post('/:id/request',isLoggedIn,async (req,res) => {
 
