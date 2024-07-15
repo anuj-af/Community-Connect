@@ -22,7 +22,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 const User = require('./models/user');
-const Post =require('./models/post');
+const Post = require('./models/post');
 const { isLoggedIn } = require('./middleware');
 
 app.use(session({

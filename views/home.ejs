@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Community-Connect</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     #nav {
@@ -136,7 +136,7 @@
         <% if (currentUser) { %>
             <a href="/user/<%=currentUser._id%>/profile" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
               <span class="grid h-12 w-12 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
-                <img src="/assets/profile1.png" alt="Profile Picture">
+                <img src="/assets/profile1.png" class="h-16 w-16 object-cover rounded-full" alt="Profile Picture">
               </span>
               <div>
                 <p class="text-xs">
@@ -316,34 +316,39 @@
         <% } %>
       <%} else { %>
         <% for(let community of communities) { %>
-          <% for(let post of community.posts) { %>
-            <div class="my-4">
-              <article class="size-full overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-                <div class="bg-white p-4 sm:p-4">
-                  <div class="flex-shrink-0">
-                    <img class="w-8 h-8 rounded-full inline" src="<%= community.image.url%>"
-                      alt="Neil image">
-                    <p class="block text-xs text-gray-500 inline">Posted in community : <%=community.name%></p>
+          <% if (community.category==="public") { %>
+            <% for(let post of community.posts) { %>
+              <div class="my-4">
+                <article class="size-full overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+                  <a href="/community/<%= community._id%>">
+                  <div class="bg-white p-4 sm:p-4">
+                    <div class="flex-shrink-0">
+                      <img class="w-8 h-8 rounded-full inline" src="<%= community.image.url%>"
+                        alt="Neil image">
+                      <p class="block text-xs text-gray-500 inline">Posted in community : <%=community.name%></p>
+                    </div>
                   </div>
-                </div>
-                <div class="bg-white p-4 sm:p-6">
-                  <a href="#">
-                    <h3 class="mt-0.5 text-lg text-gray-900"><%= post.title %></h3>
                   </a>
-                  
-                  <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-                    <%= post.content %>
-                  </p>
-                  <% if (post.image.url) { %>
-                    <img alt=""
-                      src="<%=post.image.url%>"
-                      class="h-56 w-full object-cover" style="border-radius: 12px;margin-bottom: 10px;margin-top: 10px;" />
-                  <% } %>
-                </div>
-
-              </article>
-            </div>
-          <% }%> 
+                  <div class="bg-white p-4 sm:p-6">
+                    <a href="/community/<%= community._id%>">
+                      <h3 class="mt-0.5 text-lg text-gray-900"><%= post.title %></h3>
+                    </a>
+                    
+                    <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+                      <%= post.content %>
+                    </p>
+                    <% if (post.image.url) { %>
+                      <img alt=""
+                        src="<%=post.image.url%>"
+                        class="h-56 w-full object-cover" style="border-radius: 12px;margin-bottom: 10px;margin-top: 10px;" />
+                    <% } %>
+                  </div>
+  
+                </article>
+              </div>
+            <% }%> 
+           
+          <% } %>
         <% } %>
        <% } %>
 
@@ -353,9 +358,9 @@
       <div id="sideDesc" class="sticky inset-y-0 top-20 right-0 p-4 bg-white border border-gray-100 rounded-lg shadow sm:p-8 border-gray-100">
         <div class="flex items-center justify-between mb-4">
           <h5 class="text-xl font-bold leading-none text-gray-900 text-gray-500">All Communities</h5>
-          <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 ml-3">
+          <div class="text-sm font-medium text-blue-600 ml-3">
             Scroll for more
-          </a>
+          </div>
         </div>
         <div class="flow-root ">
           <ul role="list" class="divide-y divide-gray-200 overflow-y-auto h-96 no-scrollbar">

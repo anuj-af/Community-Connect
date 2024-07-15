@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Community-Connect</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
@@ -151,7 +151,7 @@
       <% if (currentUser) { %>
           <a href="/user/<%=currentUser._id%>/profile" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
             <span class="grid h-12 w-12 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
-              <img src="/assets/profile1.png" alt="Profile Picture">
+              <img src="/assets/profile1.png" class="h-16 w-16 object-cover rounded-full" alt="Profile Picture">
             </span>
             <div>
               <p class="text-xs">
@@ -321,11 +321,21 @@
               Community Chat
             </button>
           </a>
-          <a href="/community/<%= community._id %>/post/new" class="inline-flex">
+          <a href="/community/<%= community._id %>/edit" class="inline-flex">
+            <button class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-50 text-indigo-600 font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-indigo-100">
+              Edit Community 
+            </button>
+          </a>
+          <form action="/community/<%= community._id %>?_method=DELETE" method="post" class="inline-flex">
+            <button type="submit" class="py-3.5 px-4 me-4 inline-flex rounded-full bg-indigo-50 text-indigo-600 font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-indigo-100">
+              Delete Community 
+            </button>
+          </form>
+          <!-- <a href="/community/<%= community._id %>/post/new" class="inline-flex">
           <button class="rounded-full py-3.5 px-4 inline-flex bg-gray-100 flex items-center group transition-all duration-500 hover:bg-indigo-100 ">
             <span class="px-2 font-medium text-base leading-7 text-gray-700 transition-all duration-500 group-hover:text-indigo-600">Create Post +</span>
           </button>
-          </a>
+          </a> -->
         </div>
       </section>
     
@@ -542,9 +552,9 @@
       <div id="sideDesc" class="sticky inset-y-0 top-20 right-0 p-4 bg-white border border-gray-100 rounded-lg shadow sm:p-8 border-gray-100">
         <div class="flex items-center justify-between mb-4">
           <h5 class="text-xl font-bold leading-none text-gray-900 text-gray-500">All Communities</h5>
-          <a href="#" class="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-500 ml-3">
+          <div class="text-sm font-medium text-indigo-600 ml-3">
             Scroll for more
-          </a>
+          </div>
         </div>
         <div class="flow-root ">
           <ul role="list" class="divide-y divide-gray-200 overflow-y-auto h-96 no-scrollbar">
