@@ -47,7 +47,6 @@ module.exports.getProfile = catchAsync(async (req, res, next) => {
         const { userId } = req.params;
         const user = await User.findById(userId).populate('followings');
         res.render('user/profile', { user });
-        
     }
     catch (e) {
         next(new CustomError('User not found :(', 400));
