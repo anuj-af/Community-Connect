@@ -47,7 +47,6 @@ module.exports.getProfile = catchAsync(async (req, res, next) => {
         const { userId } = req.params;
         const user = await User.findById(userId).populate('followings');
         res.render('user/profile', { user });
-        
     }
     catch (e) {
         next(new CustomError('User not found :(', 400));
@@ -73,7 +72,9 @@ module.exports.editProfile = catchAsync(async (req, res,next) => {
 
         if(req.file){
             
-            await cloudinary.uploader.destroy(file);
+            if(file){
+                await cloudinary.uploader.destroy(file);
+            }
 
             const {path,filename}=req.file;
             user.image = {url : path,filename : filename};

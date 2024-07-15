@@ -121,9 +121,6 @@ app.use((req,res,next) => {
 })
 
 const Community = require('./models/community');
-app.get('/test2',(req,res)=>{
-    res.render('test2');
-})
 
 // Home Endpoint
 app.get('/',async (req,res) => {
@@ -144,8 +141,21 @@ app.get('/',async (req,res) => {
     }
 })
 
-app.get('/test', (req,res) => {
-    res.render('test');
+app.get('/test',async (req,res) => {
+    const communities = await Community.find({}).populate('posts');
+    if(req.user){
+        const userId=req.user._id;
+        const user=await User.findById(userId).populate({
+            path : 'followings',
+            populate : {
+                path : 'posts'
+            }
+        })
+        res.render('test',{communities,user});
+    }
+    else{
+        res.redirect('/user/login')
+    }
 })
 
 // Community Endpoints
@@ -178,14 +188,14 @@ app.use((err,req,res,next)=>{
 
 // Socket.io connection
 io.on('connection', (socket) => {
-    console.log('New client connected');
+    // console.log('New client connected');
 
-    socket.on('sendMessage', (message) => {
-        io.emit('newMessage', message);
+    socket.on('sendMessage', (message,currentUser) => {
+        io.emit('newMessage',message,currentUser);
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        // console.log('Client disconnected');
     });
 
     socket.on('acceptRequest',async (userId,communityId) => {
